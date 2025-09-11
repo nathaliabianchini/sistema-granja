@@ -5,9 +5,10 @@
    ```bash
    git clone <repository-url>
    ```
+   ```bash
    python.exe init_db.py
    ```
-   ```
+   ```bash
    python.exe app.py
    ```
 
