@@ -26,7 +26,7 @@ class Usuario(db.Model):
     id_usuario = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     nome = db.Column(db.String(100), nullable=False)
     cpf = db.Column(db.String(11), unique=True, nullable=False)
-    sexo = db.Column(db.Enum(Sexo), nullable=False)
+    sexo = db.Column(db.Enum(Sexo), nullable=True)
     data_nascimento = db.Column(db.Date, nullable=False)
     endereco = db.Column(db.String(150), nullable=False)
     data_admissao = db.Column(db.Date, nullable=False)
