@@ -1,10 +1,11 @@
 # Projeto Granja
 
 ## EXECUTANDO A APLICAÇÃO
-   clone the repository:
+   clone o repositório:
    ```bash
    git clone <repository-url>
    ```
+   execute a aplicação:
    ```bash
    python.exe init_db.py
    ```
