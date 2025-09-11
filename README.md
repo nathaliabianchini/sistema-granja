@@ -1,11 +1,12 @@
-# ProjetoGranja
+# Projeto Granja
 
-## Executando a aplicação
+## EXECUTANDO A APLICAÇÃO
    clone the repository:
    ```bash
    git clone <repository-url>
    ```
-   ```python.exe init_db.py
+   python.exe init_db.py
+   ```
    python.exe app.py
    ```
 
