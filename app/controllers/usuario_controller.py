@@ -1,20 +1,20 @@
 from flask import request, jsonify
-from app.models import Usuario, db
+from app.models import Usuarios, db
 from sqlalchemy import or_
 
 def find_by_email_or_cpf(email: str, cpf: str):
-    return Usuario.query.filter(
-        or_(Usuario.email == email, Usuario.cpf == cpf)
+    return Usuarios.query.filter(
+        or_(Usuarios.email == email, Usuarios.cpf == cpf)
     ).first()
 
 def get_user(user_id):
-    user = Usuario.query.get(user_id)
+    user = Usuarios.query.get(user_id)
     if user:
         return jsonify(user.to_dict())
     return jsonify({'message': 'User not found'}), 404
     
 def update_user(user_id, **kwargs):
-    user = Usuario.query.get(user_id)
+    user = Usuarios.query.get(user_id)
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
@@ -30,11 +30,11 @@ def update_user(user_id, **kwargs):
         return jsonify({'message': 'Error updating user', 'error': str(e)}), 500
 
 def get_users():
-    users = Usuario.query.all()
+    users = Usuarios.query.all()
     return jsonify([user.to_dict() for user in users])
 
 def deactivate_user(user_id):
-    user = Usuario.query.get(user_id)
+    user = Usuarios.query.get(user_id)
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
