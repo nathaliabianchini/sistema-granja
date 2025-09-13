@@ -103,6 +103,9 @@ def register_grange():
         
         if 'cnpj_granja' not in data:
             return jsonify({'error': 'Grange CNPJ is required'}), 400
+            
+        if 'nome_granja' not in data or not data['nome_granja'].strip():
+            return jsonify({'error': 'Grange name is required'}), 400
 
         from app.models import Granjas, db
         
@@ -110,13 +113,16 @@ def register_grange():
         if existing_granja:
             return jsonify({'error': 'This CNPJ has already been registered'}), 400
 
-        new_granja = Granjas(**{'cnpj_granja': data['cnpj_granja']})
+        new_granja = Granjas(**{
+            'cnpj_granja': data['cnpj_granja'],
+            'nome_granja': data['nome_granja'].strip()
+        })
 
         db.session.add(new_granja)
         db.session.commit()
         
         return jsonify({
-            'message': 'Grange registered successfully!'
+            'message': 'Grange registered successfully!',
         }), 201
         
     except Exception as e:
@@ -131,7 +137,10 @@ def create_default_admin():
         
         granja_exists = Granjas.query.first()
         if not granja_exists:
-            default_granja = Granjas(**{'cnpj_granja': '00000000000000'})
+            default_granja = Granjas(**{
+                'cnpj_granja': '00000000000000',
+                'nome_granja': 'GRANJA PADRÃO'
+            })
             db.session.add(default_granja)
             db.session.commit()
             granja_id = default_granja.id_granja

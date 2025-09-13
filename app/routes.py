@@ -70,13 +70,13 @@ def get_user_by_id(user_id):
 def deactivate_user_route(user_id):
     return deactivate_user(user_id)
 
-@bp.route('/api/register-grange', methods=['POST'])
+@bp.route('/api/auth/register-grange', methods=['POST'])
 def register_grange():
     from app.controllers.auth_controller import register_grange
     return register_grange()
 
 
-@bp.route('/api/register-poultry', methods=['POST'])
+@bp.route('/api/auth/register-poultry', methods=['POST'])
 @production_access  
 def register_poultry_route():
     try:

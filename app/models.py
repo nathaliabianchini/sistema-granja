@@ -18,6 +18,7 @@ class Granjas(db.Model):
     __tablename__ = 'granja'
     id_granja = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     cnpj_granja = db.Column(db.String(14), unique=True, nullable=False)
+    nome_granja = db.Column(db.String(100), nullable=False)
     
     def __repr__(self):
         return f'<Granja {self.id_granja}>'
