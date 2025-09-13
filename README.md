@@ -21,8 +21,8 @@
 | Desenvolvimento do banco de dados   | Luiz                | 03/09/2025            | FEITO    |
 | CRUD Funcionários                   | Nathalia            | 17/09/2025            | FEITO    | 
 | Login                               | Nathalia            | 17/09/2025            | FEITO    |
-| CRUD Aves                           | Nathalia            | 17/09/2025            |          |
-| CRUD Notificar funcionários         | Nathalia            | 17/09/2025            |          |
+| CRUD Aves                           | Nathalia            | 17/09/2025            | FEITO         |
+| CRUD Notificar funcionários         | Nathalia            | 17/09/2025            |      FEITO    |
 | CRUD Vacinas                        | Luiz                | 01/10/2025            | EM ANDAM.|
 | CRUD Produção                       | Luiz                | 17/09/2025            |          |
 | CRUD Materiais e insumos            | Giovanna            | 24/09/2025            |          |
