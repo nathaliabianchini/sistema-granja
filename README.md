@@ -56,6 +56,7 @@
 | CRUD Vacinas                        | Luiz                | 01/10/2025            | EM ANDAM.|
 | CRUD Produção                       | Luiz                | 17/09/2025            |          |
 | CRUD Materiais e insumos            | Giovanna            | 24/09/2025            |          |
+| Adicionar logs nos endpoints         | Nathalia            | 24/09/2025            |      EM ANDAM.    |
 | Relatório mortalidade               | Luiz                | 08/10/2025            |          |
 | Relatório produção                  | Luiz                | 15/10/2025            |          |
 | Desenvolvimento frontend            | Giovanna            | 22/10/2025            | EM ANDAM.|
