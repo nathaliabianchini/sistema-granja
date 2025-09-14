@@ -37,6 +37,8 @@ def deactivate_user(user_id):
     user = Usuarios.query.get(user_id)
     if not user:
         return jsonify({'message': 'User not found'}), 404
+    if user.is_ativo == False:
+        return jsonify({'message': 'User already deactivated'}), 400
 
     user.is_ativo = False
     try:
@@ -45,4 +47,19 @@ def deactivate_user(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Error deactivating user', 'error': str(e)}), 500
+    
+def reactivate_user(user_id):
+    user = Usuarios.query.get(user_id)
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+    if user.is_ativo == True:
+        return jsonify({'message': 'User already active'}), 400
+    
+    user.is_ativo = True
+    try:
+        db.session.commit()
+        return jsonify({'message': 'User reactivated successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Error reactivating user', 'error': str(e)}), 500
 

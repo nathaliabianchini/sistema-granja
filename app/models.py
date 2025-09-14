@@ -126,7 +126,6 @@ class Aves(db.Model):
     caracteristicas_geneticas = db.Column(db.String(200), nullable=True)
     observacoes = db.Column(db.Text, nullable=True)
     
-    # Campos para soft delete
     is_ativo = db.Column(db.Boolean, default=True, nullable=False)
     data_exclusao = db.Column(db.DateTime, nullable=True)
     motivo_exclusao = db.Column(db.Text, nullable=True)

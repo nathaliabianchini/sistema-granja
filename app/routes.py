@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.controllers.auth_controller import register, sign_in
-from app.controllers.usuario_controller import get_user, get_users, deactivate_user
+from app.controllers.usuario_controller import get_user, get_users, deactivate_user, reactivate_user
 from app.controllers.aves_controller import register_poultry, get_poultries, get_poultry, update_poultry, delete_poultry
 from app.controllers.gerenciamento_usuario_controller import update_user_data, get_user_by_cpf, change_password, get_user_activity_logs, get_all_users_for_admin, forgot_password
 from app.controllers.notificacoes_controller import create_notification, get_notifications, delete_notifications, get_user_notifications, mark_notification_as_read, get_notifications_count, get_notification_history, get_notifications_grouped
@@ -70,11 +70,14 @@ def get_user_by_id(user_id):
 def deactivate_user_route(user_id):
     return deactivate_user(user_id)
 
+@bp.route('/api/users/<user_id>/reactivate', methods=['POST'])
+def reactivate_user_route(user_id):
+    return reactivate_user(user_id)
+
 @bp.route('/api/auth/register-grange', methods=['POST'])
 def register_grange():
     from app.controllers.auth_controller import register_grange
     return register_grange()
-
 
 @bp.route('/api/auth/register-poultry', methods=['POST'])
 @production_access  
