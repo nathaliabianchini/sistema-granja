@@ -21,7 +21,7 @@
    python.exe app.py
    ```
 
-   para sistemas macOS:
+   **para sistemas macOS:**
 
    clone o repositório:
    ```bash
