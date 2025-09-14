@@ -1,9 +1,15 @@
 # Projeto Granja
 
 ## EXECUTANDO A APLICAÇÃO
+
+   !atenção: é necessário possui a versão < 3.12 do python
    clone o repositório:
    ```bash
    git clone <repository-url>
+   ```
+   instale as dependências necessárias:
+   ```bash
+   pip install -r requirements.txt
    ```
    execute a aplicação:
    ```bash
@@ -11,6 +17,27 @@
    ```
    ```bash
    python.exe app.py
+   ```
+
+   para sistemas macOS:
+   clone o repositório:
+   ```bash
+   git clone <repository-url>
+   ```
+   crie um ambiente virtual:
+   ```bash
+   source venv/bin/activate
+   ```
+   instale as dependências necessárias:
+   ```bash
+   python3 -m pip install -r requirements.txt
+   ```
+   execute a aplicação:
+   ```bash
+   python3 init_db.py
+   ```
+   ```bash
+   python3 app.py
    ```
 
 ## CRONOGRAMA
