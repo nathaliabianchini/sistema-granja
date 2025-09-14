@@ -2,7 +2,9 @@
 
 ## EXECUTANDO A APLICAÇÃO
 
-   !atenção: é necessário possui a versão < 3.12 do python
+   > [!IMPORTANT]  
+   > atenção: é necessário possuir a versão < 3.12 do python
+
    clone o repositório:
    ```bash
    git clone <repository-url>
@@ -20,6 +22,7 @@
    ```
 
    para sistemas macOS:
+
    clone o repositório:
    ```bash
    git clone <repository-url>
