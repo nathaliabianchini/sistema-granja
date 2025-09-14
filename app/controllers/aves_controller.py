@@ -19,13 +19,13 @@ def register_poultry(id_lote: str, raca_ave: Union[str, RacaAve], data_nasciment
         
         for field_name, field_value in required_fields.items():
             if not field_value:
-                return jsonify({'error': f'Campo obrigatório não preenchido: {field_name}'}), 400
+                return jsonify({'error': f'Required field not filled: {field_name}'}), 400
 
         if isinstance(raca_ave, str):
             try:
                 raca_ave = RacaAve(raca_ave)
             except ValueError:
-                return jsonify({'error': f'Raça inválida: {raca_ave}. Valores válidos: {[r.value for r in RacaAve]}'}), 400
+                return jsonify({'error': f'Invalid breed: {raca_ave}. Valid values: {[r.value for r in RacaAve]}'}), 400
 
         new_poultry = Aves(**{  
             'id_lote': id_lote,
@@ -43,14 +43,12 @@ def register_poultry(id_lote: str, raca_ave: Union[str, RacaAve], data_nasciment
         db.session.commit()
         
         return jsonify({
-            'message': 'Ave registrada com sucesso!',
-            'id_ave': new_poultry.id_ave,
-            'identificacao': new_poultry.id_ave
+            'message': 'Poultry registered successfully!',
         }), 201
         
     except Exception as error:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(error)}'}), 500
+        return jsonify({'error': f'Internal error: {str(error)}'}), 500
 
 def get_poultries(id_ave=None, raca=None, id_lote=None, data_nascimento=None, incluir_inativas=False):
     try:
@@ -87,13 +85,13 @@ def get_poultries(id_ave=None, raca=None, id_lote=None, data_nascimento=None, in
             'excluido_por': ave.excluido_por
         } for ave in poultries])
     except Exception as error:
-        return jsonify({'error': f'Erro interno: {str(error)}'}), 500
+        return jsonify({'error': f'Internal error: {str(error)}'}), 500
 
 def get_poultry(ave_id: str):
     try:
         ave = Aves.query.get(ave_id)
         if not ave:
-            return jsonify({'message': 'Ave não encontrada'}), 404
+            return jsonify({'message': 'Poultry not found'}), 404
         
         return jsonify({
             'id_ave': ave.id_ave,
@@ -108,13 +106,13 @@ def get_poultry(ave_id: str):
             'observacoes': ave.observacoes
         })
     except Exception as error:
-        return jsonify({'error': f'Erro interno: {str(error)}'}), 500
+        return jsonify({'error': f'Internal error: {str(error)}'}), 500
 
 def update_poultry(ave_id: str, **kwargs):
     try:
         ave = Aves.query.get(ave_id)
         if not ave:
-            return jsonify({'message': 'Ave não encontrada'}), 404
+            return jsonify({'message': 'Poultry not found'}), 404
 
         current_user = g.get('current_user')
         modificacoes = []
@@ -133,7 +131,7 @@ def update_poultry(ave_id: str, **kwargs):
                     try:
                         new_value = RacaAve(new_value)
                     except ValueError:
-                        return jsonify({'error': f'Raça inválida: {new_value}'}), 400
+                        return jsonify({'error': f'Invalid breed: {new_value}'}), 400
                 
                 if field == 'data_nascimento' and isinstance(new_value, str):
                     new_value = datetime.strptime(new_value, '%Y-%m-%d').date()
@@ -157,25 +155,25 @@ def update_poultry(ave_id: str, **kwargs):
             
             db.session.commit()
             return jsonify({
-                'message': 'Ave atualizada com sucesso!',
-                'modificacoes': modificacoes
+                'message': 'Poultry updated successfully!',
+                'modifications': modificacoes
             }), 200
         else:
-            return jsonify({'message': 'Nenhuma modificação detectada'}), 200
+            return jsonify({'message': 'No modification detected'}), 200
             
     except Exception as error:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(error)}'}), 500
+        return jsonify({'error': f'Internal error: {str(error)}'}), 500
 
 def delete_poultry(ave_id: str, motivo_exclusao: str):
     try:
         ave = Aves.query.get(ave_id)
         if not ave:
-            return jsonify({'message': 'Ave não encontrada'}), 404
+            return jsonify({'message': 'Poultry not found'}), 404
         
         if not ave.is_ativo:
-            return jsonify({'message': 'Ave já foi excluída anteriormente'}), 400
-        
+            return jsonify({'message': 'Poultry already deleted'}), 400
+
         current_user = g.get('current_user')
         
         ave.is_ativo = False
@@ -193,7 +191,7 @@ def delete_poultry(ave_id: str, motivo_exclusao: str):
         db.session.commit()
         
         return jsonify({
-            'message': 'Ave excluída com sucesso (soft delete)!',
+            'message': 'Poultry deleted successfully (soft delete)!',
             'motivo': motivo_exclusao,
             'data_exclusao': ave.data_exclusao.isoformat(),
             'excluido_por': ave.excluido_por
@@ -201,4 +199,4 @@ def delete_poultry(ave_id: str, motivo_exclusao: str):
         
     except Exception as error:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(error)}'}), 500
+        return jsonify({'error': f'Internal error: {str(error)}'}), 500

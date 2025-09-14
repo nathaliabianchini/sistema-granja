@@ -13,13 +13,13 @@ def create_notification():
         required_fields = ['titulo', 'conteudo', 'categoria', 'destinatarios']
         for field in required_fields:
             if field not in data:
-                return jsonify({'error': f'Campo obrigatório: {field}'}), 400
+                return jsonify({'error': f'Required field: {field}'}), 400
         
         if isinstance(data['categoria'], str):
             try:
                 categoria = CategoriaNotificacao(data['categoria'])
             except ValueError:
-                return jsonify({'error': f'Categoria inválida: {data["categoria"]}'}), 400
+                return jsonify({'error': f'Invalid category: {data["categoria"]}'}), 400
         else:
             categoria = data['categoria']
         
@@ -28,7 +28,7 @@ def create_notification():
             try:
                 prioridade = PrioridadeNotificacao(data['prioridade'])
             except ValueError:
-                return jsonify({'error': f'Prioridade inválida: {data["prioridade"]}'}), 400
+                return jsonify({'error': f'Invalid priority: {data["prioridade"]}'}), 400
         
         data_validade = None
         if 'data_validade' in data and data['data_validade']:
@@ -74,14 +74,14 @@ def create_notification():
         )
         
         return jsonify({
-            'message': 'Aviso criado com sucesso!',
+            'message': 'Notification created successfully!',
             'id_aviso': novo_aviso.id_aviso,
             'destinatarios_notificados': len(destinatarios_criados)
         }), 201
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def get_notifications():
     try:
@@ -139,7 +139,7 @@ def get_notifications():
         } for aviso in avisos]), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def delete_notifications(aviso_id: str):
     try:
@@ -147,13 +147,13 @@ def delete_notifications(aviso_id: str):
         aviso = Avisos.query.get(aviso_id)
         
         if not aviso:
-            return jsonify({'error': 'Aviso não encontrado'}), 404
+            return jsonify({'error': 'Notification not found.'}), 404
         
         if not aviso.is_ativo:
-            return jsonify({'error': 'Aviso já foi excluído'}), 400
+            return jsonify({'error': 'Notification already deleted.'}), 400
         
         if aviso.criado_por != current_user.id_usuario and current_user.tipo_usuario.value != 'ADMIN':
-            return jsonify({'error': 'Apenas o criador ou ADMIN pode excluir este aviso'}), 403
+            return jsonify({'error': 'Only the creator or ADMIN can delete this notification'}), 403
         
         aviso.is_ativo = False
         aviso.data_exclusao = datetime.utcnow()
@@ -179,11 +179,11 @@ def delete_notifications(aviso_id: str):
             f'Aviso excluído: {aviso.titulo}'
         )
         
-        return jsonify({'message': 'Aviso excluído com sucesso'}), 200
+        return jsonify({'message': 'Notification deleted successfully.'}), 200
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def get_user_notifications():
     try:
@@ -233,7 +233,7 @@ def get_user_notifications():
         return jsonify(result), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def mark_notification_as_read(notification_id: str):
     try:
@@ -244,10 +244,10 @@ def mark_notification_as_read(notification_id: str):
         ).first()
         
         if not notificacao:
-            return jsonify({'error': 'Notificação não encontrada'}), 404
+            return jsonify({'error': 'Notification not found'}), 404
         
         if notificacao.status == StatusNotificacao.LIDA:
-            return jsonify({'message': 'Notificação já foi lida'}), 200
+            return jsonify({'message': 'Notification already read.'}), 200
         
         notificacao.status = StatusNotificacao.LIDA
         notificacao.data_leitura = datetime.utcnow()
@@ -260,11 +260,11 @@ def mark_notification_as_read(notification_id: str):
             f'Notificação marcada como lida: {notificacao.aviso.titulo if notificacao.aviso else "N/A"}'
         )
         
-        return jsonify({'message': 'Notificação marcada como lida'}), 200
+        return jsonify({'message': 'Notification marked as read.'}), 200
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def get_notifications_count():
     try:
@@ -302,7 +302,7 @@ def get_notifications_count():
         }), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def get_notification_history(aviso_id: str):
     try:
@@ -310,7 +310,7 @@ def get_notification_history(aviso_id: str):
         
         aviso = Avisos.query.get(aviso_id)
         if not aviso:
-            return jsonify({'error': 'Aviso não encontrado'}), 404
+            return jsonify({'error': 'Notification not found'}), 404
         
         historico = HistoricoAvisos.query.filter_by(id_aviso=aviso_id).order_by(
             HistoricoAvisos.data_acao.desc()
@@ -331,7 +331,7 @@ def get_notification_history(aviso_id: str):
         } for hist in historico]), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def get_notifications_grouped():
     try:
@@ -373,4 +373,4 @@ def get_notifications_grouped():
         return jsonify(agrupadas), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500

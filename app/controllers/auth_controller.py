@@ -16,9 +16,9 @@ def register(nome: str, email: str, cpf: str, senha: str, tipo_usuario: Union[st
         if existing_user:
             return jsonify({'message': 'The provided email or CPF already belongs to another user.'}), 400
         
-        if not validate_cpf(cpf):
-            return jsonify({'error': 'CPF inválido'}), 400
-        
+        # if not validate_cpf(cpf):
+        #     return jsonify({'error': 'CPF inválido'}), 400
+
         is_valid, password_msg = validate_password(senha)
         if not is_valid:
             return jsonify({'error': password_msg}), 400
@@ -86,12 +86,6 @@ def sign_in(email: str, senha: str):
         return jsonify({
             'message': 'Login successful!',
             'token': token,
-            'user': {
-                'id': user.id_usuario,
-                'nome': user.nome,
-                'email': user.email,
-                'tipo_usuario': user.tipo_usuario.value
-            }
         }), 200
 
     except Exception as error:

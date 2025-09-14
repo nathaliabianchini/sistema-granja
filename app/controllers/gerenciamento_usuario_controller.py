@@ -9,7 +9,7 @@ def update_user_data(user_id: str):
         user = Usuarios.query.get(user_id)
         
         if not user:
-            return jsonify({'error': 'Usuário não encontrado'}), 404
+            return jsonify({'error': 'User not found'}), 404
         
         data = request.get_json()
         updatable_fields = ['nome', 'sexo', 'endereco', 'tipo_usuario', 'telefone']
@@ -33,11 +33,11 @@ def update_user_data(user_id: str):
                     )
         
         db.session.commit()
-        return jsonify({'message': 'Dados do usuário atualizados com sucesso'}), 200
+        return jsonify({'message': 'User data updated successfully'}), 200
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def get_user_by_cpf():
     try:
@@ -45,15 +45,15 @@ def get_user_by_cpf():
         cpf = data.get('cpf')
         
         if not cpf:
-            return jsonify({'error': 'CPF é obrigatório'}), 400
+            return jsonify({'error': 'CPF is required'}), 400
         
-        if not validate_cpf(cpf):
-            return jsonify({'error': 'CPF inválido'}), 400
-        
+        # if not validate_cpf(cpf):
+        #     return jsonify({'error': 'Invalid CPF'}), 400
+
         user = Usuarios.query.filter_by(cpf=cpf).first()
         if not user:
-            return jsonify({'message': 'Usuário não encontrado'}), 404
-        
+            return jsonify({'message': 'User not found'}), 404
+
         current_user = g.get('current_user')
         log_user_activity(
             current_user.id_usuario if current_user else None,
@@ -64,7 +64,7 @@ def get_user_by_cpf():
         return jsonify(user.to_dict()), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def change_password():
     try:
@@ -75,12 +75,12 @@ def change_password():
         new_password = data.get('nova_senha')
         
         if not current_password or not new_password:
-            return jsonify({'error': 'Senha atual e nova senha são obrigatórias'}), 400
-        
+            return jsonify({'error': 'Current password and new password are required'}), 400
+
         if not bcrypt.checkpw(current_password.encode('utf-8'), current_user.senha.encode('utf-8')):
-            log_user_activity(current_user.id_usuario, 'PASSWORD_CHANGE_FAILED', 'Senha atual incorreta')
-            return jsonify({'error': 'Senha atual incorreta'}), 401
-        
+            log_user_activity(current_user.id_usuario, 'PASSWORD_CHANGE_FAILED', 'Incorrect current password')
+            return jsonify({'error': 'Incorrect current password'}), 401
+
         is_valid, password_msg = validate_password(new_password)
         if not is_valid:
             return jsonify({'error': password_msg}), 400
@@ -89,14 +89,14 @@ def change_password():
         current_user.senha = hashed_new_password
         
         db.session.commit()
-        
-        log_user_activity(current_user.id_usuario, 'PASSWORD_CHANGED', 'Senha alterada com sucesso')
-        
-        return jsonify({'message': 'Senha alterada com sucesso'}), 200
-        
+
+        log_user_activity(current_user.id_usuario, 'PASSWORD_CHANGED', 'Password changed successfully')
+
+        return jsonify({'message': 'Password changed successfully'}), 200
+
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 from typing import Optional
 
@@ -125,7 +125,7 @@ def get_user_activity_logs(user_id: Optional[str] = None):
         } for log in logs]), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def get_all_users_for_admin():
     try:
@@ -141,7 +141,7 @@ def get_all_users_for_admin():
         return jsonify([user.to_dict() for user in users]), 200
         
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 def forgot_password():
     try:
@@ -149,26 +149,26 @@ def forgot_password():
         email = data.get('email')
         
         if not email:
-            return jsonify({'error': 'Email é obrigatório'}), 400
+            return jsonify({'error': 'Email is required'}), 400
         
         user = Usuarios.query.filter_by(email=email).first()
         if not user:
-            return jsonify({'message': 'Se o email existir, instruções foram enviadas'}), 200
-        
+            return jsonify({'message': 'If the email exists, instructions have been sent'}), 200
+
         new_password = "Temp123"
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt(10)).decode('utf-8')
         user.senha = hashed_password
         
         db.session.commit()
-        
-        log_user_activity(user.id_usuario, 'PASSWORD_RESET', 'Senha redefinida por esquecimento')
-        
+
+        log_user_activity(user.id_usuario, 'PASSWORD_RESET', 'Password reset due to forgetfulness')
+
         return jsonify({
-            'message': 'Senha temporária gerada',
+            'message': 'Temporary password generated',
             'temporary_password': new_password,
-            'note': 'Altere sua senha após o primeiro login'
+            'note': 'Change your password after the first login'
         }), 200
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
