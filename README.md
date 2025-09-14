@@ -2,8 +2,8 @@
 
 ## EXECUTANDO A APLICAÇÃO
 
-   > [!IMPORTANT]  
-   > atenção: é necessário possuir a versão < 3.12 do python
+   > [!ATENÇÃO]  
+   > é necessário possuir a versão < 3.12 do python
 
    clone o repositório:
    ```bash
