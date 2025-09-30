@@ -51,13 +51,13 @@
 | Desenvolvimento do banco de dados   | Luiz                | 03/09/2025            | FEITO    |
 | CRUD Funcionários                   | Nathalia            | 17/09/2025            | FEITO    | 
 | Login                               | Nathalia            | 17/09/2025            | FEITO    |
-| CRUD Aves                           | Nathalia            | 17/09/2025            | FEITO         |
-| CRUD Notificar funcionários         | Nathalia            | 17/09/2025            |      FEITO    |
+| CRUD Aves                           | Nathalia            | 17/09/2025            | FEITO    |
+| CRUD Notificar funcionários         | Nathalia            | 17/09/2025            | FEITO    |
 | CRUD Vacinas                        | Luiz                | 01/10/2025            | EM ANDAM.|
-| CRUD Produção                       | Luiz                | 17/09/2025            |          |
+| CRUD Produção                       | Luiz                | 17/09/2025            | FEITO    |
 | CRUD Materiais e insumos            | Giovanna            | 24/09/2025            |          |
 | Relatório mortalidade               | Luiz                | 08/10/2025            |          |
-| Adicionar logs nos endpoints         | Nathalia            | 11/10/2025            |      EM ANDAM.    |
+| Adicionar logs nos endpoints         | Nathalia            | 11/10/2025           | EM ANDAM.|
 | Relatório produção                  | Luiz                | 15/10/2025            |          |
 | Desenvolvimento frontend            | Giovanna            | 22/10/2025            | EM ANDAM.|
 | Entrega parcial                     | TODOS               | 08/10/2025            |          |
