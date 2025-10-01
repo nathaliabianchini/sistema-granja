@@ -1,0 +1,78 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Produções</h1>
+        <a class="btn btn-success" href="{{ url_for('producao_web.criar') }}">
+            <i class="fas fa-plus"></i> Nova Produção
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Lote</th>
+                            <th>Data</th>
+                            <th>Qtd. Aves</th>
+                            <th>Ovos Produzidos</th>
+                            <th>Qtd. Não Aproveitada</th>
+                            <th>Qualidade</th>
+                            <th>Responsável</th>
+                            <th>Observações</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in producoes %}
+                        <tr>
+                            <td>{{ p.id_producao }}</td>
+                            <td>{{ p.lote.numero_lote }}</td>
+                            <td>{{ p.data_coleta.strftime("%d/%m/%Y") }}</td>
+                            <td>{{ p.quantidade_aves }}</td>
+                            <td>{{ p.quantidade_ovos }}</td>
+                            <td>{{ p.producao_nao_aproveitada }}</td>
+                            <td>
+                                {% set qualidade = p.qualidade_producao.lower() %}
+                                {% if qualidade == 'excelente' %}
+                                    <span class="badge bg-success">{{ p.qualidade_producao }}</span>
+                                {% elif qualidade == 'bom' or qualidade == 'boa' %}
+                                    <span class="badge bg-info">{{ p.qualidade_producao }}</span>
+                                {% elif qualidade == 'regular' %}
+                                    <span class="badge bg-warning">{{ p.qualidade_producao }}</span>
+                                {% elif qualidade == 'ruim' %}
+                                    <span class="badge bg-danger">{{ p.qualidade_producao }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ p.qualidade_producao }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ p.responsavel }}</td>
+                            <td>{{ p.observacoes or "-" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-outline-primary" 
+                                       href="{{ url_for('producao_web.editar', producao_id=p.id_producao) }}"
+                                       title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center text-muted">
+                                Nenhuma produção cadastrada
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

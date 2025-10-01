@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, jsonify, g
-from app.models import Usuarios, TipoUsuario
+from app.models import Usuarios, TipoUsuarios
 from app.config import verify_jwt_token
 
 def require_auth(allowed_roles=None):
@@ -36,13 +36,13 @@ def require_auth(allowed_roles=None):
     return decorator
 
 def admin_required(f):
-    return require_auth([TipoUsuario.ADMIN])(f)
+    return require_auth([TipoUsuarios.ADMIN])(f)
 
 def production_access(f):
-    return require_auth([TipoUsuario.ADMIN, TipoUsuario.OPERADOR, TipoUsuario.GERENTE])(f)
+    return require_auth([TipoUsuarios.ADMIN, TipoUsuarios.OPERADOR, TipoUsuarios.GERENTE])(f)
 
 def manager_access(f):
-    return require_auth([TipoUsuario.ADMIN, TipoUsuario.GERENTE])(f)
+    return require_auth([TipoUsuarios.ADMIN, TipoUsuarios.GERENTE])(f)
 
 def read_only_access(f):
-    return require_auth([TipoUsuario.ADMIN, TipoUsuario.GERENTE, TipoUsuario.OPERADOR])(f)
+    return require_auth([TipoUsuarios.ADMIN, TipoUsuarios.GERENTE, TipoUsuarios.OPERADOR])(f)

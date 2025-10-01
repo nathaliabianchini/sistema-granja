@@ -1,0 +1,177 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">🐔 Sistema Granja</h1>
+            <p class="lead text-muted">Bem-vindo, {{ session.user_email }}! Escolha o módulo que deseja acessar:</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Módulo Produção -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-egg fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="card-title">Produção</h5>
+                    <p class="card-text">Controle de produção de ovos, registros diários e qualidade.</p>
+                    <a href="{{ url_for('producao_web.listar') }}" class="btn btn-warning">
+                        <i class="fas fa-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Módulo Animais -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-dove fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Animais</h5>
+                    <p class="card-text">Gestão de aves, lotes, raças e controle sanitário.</p>
+                    <a href="#" class="btn btn-primary" onclick="moduleNotReady('Animais')">
+                        <i class="fas fa-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Módulo Vacinas -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-syringe fa-3x text-success"></i>
+                    </div>
+                    <h5 class="card-title">Vacinas</h5>
+                    <p class="card-text">Controle de vacinação, calendários e registros sanitários.</p>
+                    <a href="#" class="btn btn-success" onclick="moduleNotReady('Vacinas')">
+                        <i class="fas fa-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Módulo Insumos -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-boxes fa-3x text-info"></i>
+                    </div>
+                    <h5 class="card-title">Insumos</h5>
+                    <p class="card-text">Controle de estoque, materiais, rações e suprimentos.</p>
+                    <a href="#" class="btn btn-info" onclick="moduleNotReady('Insumos')">
+                        <i class="fas fa-arrow-right"></i> Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- card administrador -->
+{% if session.user_tipo == 'administrador' %}
+<div class="col-lg-3 col-md-6">
+    <div class="card h-100 shadow-sm hover-card">
+        <div class="card-body text-center">
+            <div class="mb-3">
+                <i class="fas fa-users-cog fa-3x text-danger"></i>
+            </div>
+            <h5 class="card-title">Usuários</h5>
+            <p class="card-text">Gerenciar funcionários e permissões do sistema.</p>
+            <a href="{{ url_for('auth.listar_usuarios') }}" class="btn btn-danger">
+                <i class="fas fa-arrow-right"></i> Acessar
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+    <!-- Cards de estatísticas resumidas -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>📊 Resumo Geral</h3>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>1,250</h4>
+                            <p class="mb-0">Ovos Hoje</p>
+                        </div>
+                        <i class="fas fa-egg fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>850</h4>
+                            <p class="mb-0">Aves Ativas</p>
+                        </div>
+                        <i class="fas fa-dove fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>98%</h4>
+                            <p class="mb-0">Vacinação</p>
+                        </div>
+                        <i class="fas fa-syringe fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>75%</h4>
+                            <p class="mb-0">Estoque</p>
+                        </div>
+                        <i class="fas fa-boxes fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: transform 0.2s;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+}
+</style>
+
+<script>
+function moduleNotReady(moduleName) {
+    alert('Módulo "' + moduleName + '" em desenvolvimento!\nEm breve estará disponível.');
+}
+</script>
+{% endblock %}

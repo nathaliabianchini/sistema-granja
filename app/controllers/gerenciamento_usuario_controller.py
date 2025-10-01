@@ -1,5 +1,5 @@
 from flask import request, jsonify, g
-from app.models import Usuarios, UserActivityLog, db, Sexo, TipoUsuario
+from app.models import Usuarios, UserActivityLog, db, Sexo, TipoUsuarios
 from app.utils import validate_password, log_user_activity, validate_cpf
 import bcrypt
 
@@ -22,7 +22,7 @@ def update_user_data(user_id: str):
                 if field == 'sexo' and isinstance(new_value, str):
                     new_value = Sexo(new_value)
                 elif field == 'tipo_usuario' and isinstance(new_value, str):
-                    new_value = TipoUsuario(new_value)
+                    new_value = TipoUsuarios(new_value)
                 
                 if old_value != new_value:
                     setattr(user, field, new_value)

@@ -1,0 +1,159 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Editar Produção #{{ producao.id_producao }}</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.lote.label(class="form-label") }}
+                            {{ form.lote(class="form-control") }}
+                            {% if form.lote.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.lote.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.data_coleta.label(class="form-label") }}
+                            {{ form.data_coleta(class="form-control") }}
+                            {% if form.data_coleta.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.data_coleta.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.quantidade_aves.label(class="form-label") }}
+                            {{ form.quantidade_aves(class="form-control") }}
+                            {% if form.quantidade_aves.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.quantidade_aves.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.quantidade_ovos.label(class="form-label") }}
+                            {{ form.quantidade_ovos(class="form-control") }}
+                            {% if form.quantidade_ovos.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.quantidade_ovos.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.qualidade_producao.label(class="form-label") }}
+                            {{ form.qualidade_producao(class="form-select") }}
+                            {% if form.qualidade_producao.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.qualidade_producao.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.producao_nao_aproveitada.label(class="form-label") }}
+                            {{ form.producao_nao_aproveitada(class="form-control") }}
+                            {% if form.producao_nao_aproveitada.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.producao_nao_aproveitada.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.responsavel.label(class="form-label") }}
+                            {{ form.responsavel(class="form-control") }}
+                            {% if form.responsavel.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.responsavel.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.observacoes.label(class="form-label") }}
+                            {{ form.observacoes(class="form-control", rows="3") }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.observacoes.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                             <button type="submit" class="btn btn-success">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                            <a href="{{ url_for('producao_web.listar') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tem certeza que deseja excluir esta produção?</strong></p>
+                <div class="bg-light p-3 rounded">
+                    <strong>ID:</strong> {{ producao.id_producao }}<br>
+                    <strong>Data:</strong> {{ producao.data_coleta.strftime("%d/%m/%Y") }}<br>
+                    <strong>Quantidade:</strong> {{ producao.quantidade_ovos }}
+                </div>
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <form method="post" action="{{ url_for('producao_web.excluir', id=producao.id_producao) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Excluir Definitivamente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

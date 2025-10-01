@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, current_app, request, jsonify
 from app.controllers.auth_controller import register, sign_in
 from app.controllers.usuario_controller import get_user, get_users, deactivate_user, reactivate_user
 from app.controllers.aves_controller import register_poultry, get_poultries, get_poultry, update_poultry, delete_poultry
@@ -6,6 +6,12 @@ from app.controllers.gerenciamento_usuario_controller import update_user_data, g
 from app.controllers.notificacoes_controller import create_notification, get_notifications, delete_notifications, get_user_notifications, mark_notification_as_read, get_notifications_count, get_notification_history, get_notifications_grouped
 from app.decorators import production_access, read_only_access, admin_required
 from datetime import datetime
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from datetime import datetime
+from app.forms.producao_forms import ProducaoForm
+from app.controllers.producao_controller import ProducaoController
+from app.models.database import db
+from app.exceptions import BusinessError
 
 bp = Blueprint('routes', __name__)
 
@@ -266,3 +272,38 @@ def send_report_notification():
             return jsonify({'message': 'Notificação de relatório não é necessária hoje'}), 200
     except Exception as e:
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+    
+producao_api = Blueprint('producao_api', __name__, url_prefix='/api/producao')
+
+@producao_api.route('/', methods=['POST'])
+def criar_producao():
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({'error': 'JSON inválido ou ausente'}), 400
+
+    form = ProducaoForm(data=payload, meta={'csrf': False})
+    if not form.validate():
+        return jsonify({'errors': form.errors}), 400
+
+    producao_data = {
+        'lote_id': form.lote_id.data,
+        'data_producao': datetime.combine(form.data_producao.data, datetime.min.time()),
+        'quantidade_aves': form.quantidade_aves.data,
+        'quantidade_produzida': form.quantidade_produzida.data,
+        'qualidade_producao': form.qualidade_producao.data,
+        'producao_nao_aproveitada': form.producao_nao_aproveitada.data,
+        'observacoes': form.observacoes.data
+    }
+
+    try:
+        with db.atomic():
+            producao = ProducaoController.criar_producao(**producao_data)
+        return jsonify({'id_producao': producao.id_producao}), 201
+    except BusinessError as be:
+        current_app.logger.warning("Regra de negócio falhou: %s", be.message)
+        return jsonify({'error': be.message}), 422
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 422
+    except Exception:
+        current_app.logger.exception("Erro interno ao criar produção")
+        return jsonify({'error': 'erro interno'}), 500

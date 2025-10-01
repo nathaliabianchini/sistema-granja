@@ -1,19 +1,38 @@
-from flask import Flask
+from flask import Flask, redirect, url_for, session
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('app.config.Config')
-
-    from app.models import db
+    app.config['SECRET_KEY'] = 'sua-chave-secreta'
     
-    db.init_app(app)
+    # Configurar banco
+    from app.models.database import db, Lote, Producao, Usuarios
+    if not db.is_connection_usable():
+        db.connect()
+    db.create_tables([Lote, Producao, Usuarios], safe=True)
 
-    from app.routes import bp
-    app.register_blueprint(bp)
+    # Registrar blueprints WEB (páginas)
+    from app.routes.auth_routes import auth_bp
+    from app.routes.dashboard_routes import dashboard_bp
+    from app.routes.producao_routes import producao_web
     
-    with app.app_context():
-        db.create_all()
-        from app.controllers.auth_controller import create_default_admin
-        create_default_admin()
-
+    # Registrar blueprints API (JSON)
+    from app.api.endpoints.producao_api import producao_api
+    from app.routes.routes import bp as api_routes
+    
+    # Registrar todos os blueprints
+    app.register_blueprint(auth_bp)                           
+    app.register_blueprint(dashboard_bp, url_prefix='/dashboard')  
+    app.register_blueprint(producao_web, url_prefix='/producoes') 
+    app.register_blueprint(producao_api)                      
+    app.register_blueprint(api_routes, url_prefix='/api')     
+    
+    # Rota principal - VERIFICAR LOGIN PRIMEIRO
+    @app.route('/')
+    def index():
+        # Se o usuário NÃO está logado, vai para o login
+        if not session.get('user_logged_in'):
+            return redirect(url_for('auth.login'))
+        # Se está logado, vai para o dashboard
+        return redirect(url_for('dashboard.index'))
+    
     return app

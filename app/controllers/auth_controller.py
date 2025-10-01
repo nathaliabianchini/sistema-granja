@@ -1,14 +1,14 @@
 
 from flask import request, jsonify
 from app.controllers.usuario_controller import find_by_email_or_cpf
-from app.models import Usuarios, Granjas, db, Sexo, TipoUsuario
+from app.models import Usuarios, Granja, db, Sexo, TipoUsuarios, db
 from app.utils import validate_password, generate_matricula, validate_cpf, log_user_activity
 from sqlalchemy import or_
 from datetime import date
 from typing import Union
 import bcrypt
 
-def register(nome: str, email: str, cpf: str, senha: str, tipo_usuario: Union[str, TipoUsuario], 
+def register(nome: str, email: str, cpf: str, senha: str, tipo_usuario: Union[str, TipoUsuarios], 
            id_granja: str, sexo: Union[str, Sexo], data_nascimento: date, endereco: str, 
            data_admissao: date, carteira_trabalho: str, telefone: str, matricula: str = ""):
     try:
@@ -28,26 +28,26 @@ def register(nome: str, email: str, cpf: str, senha: str, tipo_usuario: Union[st
         if isinstance(sexo, str):
             sexo = Sexo(sexo)
         if isinstance(tipo_usuario, str):
-            tipo_usuario = TipoUsuario(tipo_usuario)
+            tipo_usuario = TipoUsuarios(tipo_usuario)
         
         if not matricula:
             matricula = generate_matricula()
         
-        new_user = Usuarios(**{  
-            'nome': nome,
-            'email': email,
-            'cpf': cpf,
-            'senha': hashedPassword,
-            'tipo_usuario': tipo_usuario,
-            'id_granja': id_granja,
-            'sexo': sexo,
-            'data_nascimento': data_nascimento,
-            'endereco': endereco,
-            'data_admissao': data_admissao,
-            'carteira_trabalho': carteira_trabalho,
-            'telefone': telefone,
-            'matricula': matricula
-        })
+        new_user = Usuarios.create(
+            nome=nome,
+            email=email,
+            cpf=cpf,
+            senha=hashedPassword,
+            tipo_usuario=tipo_usuario.value,  # ← .value para enum
+            id_granja=id_granja,
+            sexo=sexo.value,  # ← .value para enum
+            data_nascimento=data_nascimento,
+            endereco=endereco,
+            data_admissao=data_admissao,
+            carteira_trabalho=carteira_trabalho,
+            telefone=telefone,
+            username=matricula  # ← campo correto do modelo
+          )
 
         db.session.add(new_user)
         db.session.commit()
@@ -129,9 +129,9 @@ def create_default_admin():
         if admin_exists:
             return True
         
-        granja_exists = Granjas.query.first()
+        granja_exists = Granja.query.first()
         if not granja_exists:
-            default_granja = Granjas(**{
+            default_granja = Granja(**{
                 'cnpj_granja': '00000000000000',
                 'nome_granja': 'GRANJA PADRÃO'
             })
@@ -148,7 +148,7 @@ def create_default_admin():
             'email': 'ADMIN',
             'cpf': '00000000000',
             'senha': hashedPassword,
-            'tipo_usuario': TipoUsuario.ADMIN,
+            'tipo_usuario': TipoUsuarios.ADMIN,
             'id_granja': granja_id,
             'sexo': Sexo.MASCULINO,
             'data_nascimento': date(1990, 1, 1),
