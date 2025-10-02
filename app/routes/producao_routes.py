@@ -24,7 +24,7 @@ def criar():
     if form.validate_on_submit():
         try:
             producao = ProducaoController.criar_producao(
-                lote=form.lote.data,
+                lote_id=form.lote.data,
                 data_coleta=form.data_coleta.data,
                 quantidade_aves=form.quantidade_aves.data,
                 quantidade_ovos=form.quantidade_ovos.data,
