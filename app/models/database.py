@@ -27,7 +27,7 @@ class TipoUsuarios(Enum):
 class Usuarios(BaseModel):
     id_usuario = AutoField()
     nome = CharField(max_length=100)
-    username = CharField(max_length=50, unique=True)  # IMPORTANTE: unique=True
+    username = CharField(max_length=50, unique=True)  
     email = CharField(max_length=100)
     cpf = CharField(max_length=14)
     senha = CharField(max_length=100)
@@ -63,7 +63,7 @@ class Lote(BaseModel):
     raca = CharField(max_length=100)
     fornecedor = CharField(max_length=200)
     observacoes = TextField(null=True)
-    ativo = BooleanField(default=True)  # ← ADICIONAR ESTA LINHA
+    ativo = BooleanField(default=True) 
 
     class Meta:
         table_name = 'lotes'
@@ -134,7 +134,7 @@ class QualidadeProducao(Enum):
 
 class Producao(BaseModel):
     id_producao = AutoField()
-    data_coleta = DateField()  # ← DEVE SER ESTE NOME
+    data_coleta = DateField()  
     quantidade_ovos = IntegerField()
     quantidade_aves = IntegerField()
     qualidade_producao = CharField(max_length=50)
@@ -148,7 +148,7 @@ class Producao(BaseModel):
 
 class UserActivityLog(BaseModel):
     id_log = AutoField(primary_key=True)
-    usuario_id = IntegerField()  # Simplificar sem ForeignKey
+    usuario_id = IntegerField()  
     acao = CharField(max_length=100)
     detalhes = TextField(null=True)
     data_acao = DateTimeField(default=lambda: datetime.now())
@@ -160,7 +160,7 @@ class Avisos(BaseModel):
     id_aviso = AutoField(primary_key=True)
     titulo = CharField(max_length=200)
     mensagem = TextField()
-    tipo = CharField(max_length=50)  # 'info', 'warning', 'error', 'success'
+    tipo = CharField(max_length=50)  
     data_criacao = DateTimeField(default=lambda: datetime.now())
     ativo = BooleanField(default=True)
     
@@ -181,7 +181,7 @@ class HistoricoAvisos(BaseModel):
     id_historico = AutoField(primary_key=True)
     aviso = ForeignKeyField(Avisos, backref='historicos')
     usuario_modificador = ForeignKeyField(Usuarios)
-    acao = CharField(max_length=50)  # 'created', 'updated', 'deleted'
+    acao = CharField(max_length=50)  
     data_acao = DateTimeField(default=lambda: datetime.now())
     
     class Meta:
@@ -191,9 +191,9 @@ class HistoricoProducao(BaseModel):
     id_historico = AutoField(primary_key=True)
     producao = ForeignKeyField(Producao, backref='historicos')
     usuario_modificador = ForeignKeyField(Usuarios)
-    acao = CharField(max_length=50)  # 'created', 'updated', 'deleted'
-    valores_anteriores = TextField(null=True)  # JSON com valores antes da modificação
-    valores_novos = TextField(null=True)       # JSON com valores após modificação
+    acao = CharField(max_length=50)  
+    valores_anteriores = TextField(null=True) 
+    valores_novos = TextField(null=True)       
     data_acao = DateTimeField(default=lambda: datetime.datetime.now())
     
     class Meta:
@@ -203,7 +203,7 @@ class CategoriaNotificacao(BaseModel):
     id_categoria = AutoField(primary_key=True)
     nome = CharField(max_length=100, unique=True)
     descricao = TextField(null=True)
-    cor = CharField(max_length=7, default='#007bff')  # Código hexadecimal da cor
+    cor = CharField(max_length=7, default='#007bff')  
     ativo = BooleanField(default=True)
     
     class Meta:
@@ -211,8 +211,8 @@ class CategoriaNotificacao(BaseModel):
 
 class PrioridadeNotificacao(BaseModel):
     id_prioridade = AutoField(primary_key=True)
-    nome = CharField(max_length=50, unique=True)  # 'baixa', 'media', 'alta', 'critica'
-    nivel = IntegerField(unique=True)  # 1, 2, 3, 4
+    nome = CharField(max_length=50, unique=True)  
+    nivel = IntegerField(unique=True)  
     cor = CharField(max_length=7, default='#28a745')
     
     class Meta:
@@ -220,7 +220,7 @@ class PrioridadeNotificacao(BaseModel):
 
 class StatusNotificacao(BaseModel):
     id_status = AutoField(primary_key=True)
-    nome = CharField(max_length=50, unique=True)  # 'pendente', 'enviado', 'lido', 'arquivado'
+    nome = CharField(max_length=50, unique=True)  
     descricao = TextField(null=True)
     
     class Meta:

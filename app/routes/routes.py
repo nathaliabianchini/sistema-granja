@@ -6,8 +6,6 @@ from app.controllers.gerenciamento_usuario_controller import update_user_data, g
 from app.controllers.notificacoes_controller import create_notification, get_notifications, delete_notifications, get_user_notifications, mark_notification_as_read, get_notifications_count, get_notification_history, get_notifications_grouped
 from app.decorators import production_access, read_only_access, admin_required
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from datetime import datetime
 from app.forms.producao_forms import ProducaoForm
 from app.controllers.producao_controller import ProducaoController
 from app.models.database import db
@@ -209,7 +207,7 @@ def delete_notification_aviso(aviso_id):
 
 @bp.route('/api/notifications/avisos/<aviso_id>/history', methods=['GET'])
 @read_only_access
-def get_notification_history(aviso_id):
+def get_notification_history_route(aviso_id):
     return get_notification_history(aviso_id)
 
 @bp.route('/api/notifications', methods=['GET'])
@@ -272,7 +270,8 @@ def send_report_notification():
             return jsonify({'message': 'Notificação de relatório não é necessária hoje'}), 200
     except Exception as e:
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
-    
+
+# BLUEPRINT SEPARADO PARA API DE PRODUÇÃO
 producao_api = Blueprint('producao_api', __name__, url_prefix='/api/producao')
 
 @producao_api.route('/', methods=['POST'])

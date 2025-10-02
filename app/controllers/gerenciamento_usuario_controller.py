@@ -47,9 +47,6 @@ def get_user_by_cpf():
         if not cpf:
             return jsonify({'error': 'CPF is required'}), 400
         
-        # if not validate_cpf(cpf):
-        #     return jsonify({'error': 'Invalid CPF'}), 400
-
         user = Usuarios.query.filter_by(cpf=cpf).first()
         if not user:
             return jsonify({'message': 'User not found'}), 404

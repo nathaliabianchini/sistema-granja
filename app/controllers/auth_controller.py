@@ -16,9 +16,6 @@ def register(nome: str, email: str, cpf: str, senha: str, tipo_usuario: Union[st
         if existing_user:
             return jsonify({'message': 'The provided email or CPF already belongs to another user.'}), 400
         
-        # if not validate_cpf(cpf):
-        #     return jsonify({'error': 'CPF inválido'}), 400
-
         is_valid, password_msg = validate_password(senha)
         if not is_valid:
             return jsonify({'error': password_msg}), 400
@@ -38,15 +35,15 @@ def register(nome: str, email: str, cpf: str, senha: str, tipo_usuario: Union[st
             email=email,
             cpf=cpf,
             senha=hashedPassword,
-            tipo_usuario=tipo_usuario.value,  # ← .value para enum
+            tipo_usuario=tipo_usuario.value,  
             id_granja=id_granja,
-            sexo=sexo.value,  # ← .value para enum
+            sexo=sexo.value,  
             data_nascimento=data_nascimento,
             endereco=endereco,
             data_admissao=data_admissao,
             carteira_trabalho=carteira_trabalho,
             telefone=telefone,
-            username=matricula  # ← campo correto do modelo
+            username=matricula  
           )
 
         db.session.add(new_user)

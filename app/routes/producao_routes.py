@@ -21,20 +21,8 @@ def criar():
     lotes = list(Lote.select())
     form.lote.choices = [(lote.id_lote, lote.numero_lote) for lote in lotes]
     
-    print(f"DEBUG: Método da requisição: {request.method}")
-    
-    if request.method == 'POST':
-        print(f"DEBUG: Dados do formulário: {dict(request.form)}")
-        print(f"DEBUG: Formulário válido? {form.validate_on_submit()}")
-        
-        if form.errors:
-            print(f"DEBUG: Erros do formulário: {form.errors}")
-    
     if form.validate_on_submit():
         try:
-            print("DEBUG: Tentando criar produção...")
-            
-            # CORRIGIR OS PARÂMETROS PARA COINCIDIR COM O CONTROLLER
             producao = ProducaoController.criar_producao(
                 lote=form.lote.data,
                 data_coleta=form.data_coleta.data,
@@ -46,27 +34,20 @@ def criar():
                 observacoes=form.observacoes.data
             )
             
-            print(f"DEBUG: Produção criada: {producao}")
             flash('✅ Produção cadastrada com sucesso!', 'success')
             return redirect(url_for('producao_web.listar'))
             
         except Exception as e:
-            print(f"DEBUG: Erro na criação: {str(e)}")
-            import traceback
-            traceback.print_exc()
             flash(f'❌ Erro ao cadastrar produção: {str(e)}', 'danger')
     
     return render_template('producao/criar.html', form=form)
-
 
 @producao_web.route('/producoes/excluir/<int:id>', methods=['POST'])
 def excluir(id):
     try:
         from app.controllers.producao_controller import ProducaoController
         
-        # Chamar diretamente o método de exclusão
         ProducaoController.excluir_producao(id)
-        
         flash('Produção excluída com sucesso!', 'success')
         
     except ValueError as e:
@@ -100,11 +81,9 @@ def editar(producao_id: int):
 
     if form.validate_on_submit():
         try:
-            print(f"DEBUG: Responsável do form: {form.responsavel.data}")  # ← DEBUG
-            
             atualizado = ProducaoController.atualizar(
                 producao_id,
-                lote_id=form.lote.data,  # ← MUDANÇA AQUI: lote_id em vez de lote
+                lote_id=form.lote.data,
                 data_coleta=datetime.combine(form.data_coleta.data, datetime.min.time()),
                 quantidade_aves=form.quantidade_aves.data,
                 quantidade_ovos=form.quantidade_ovos.data,
@@ -116,8 +95,7 @@ def editar(producao_id: int):
             if atualizado:
                 flash('Produção atualizada com sucesso.', 'success')
             return redirect(url_for('producao_web.listar'))
-        except Exception as e:  # ← Mudança: capturar Exception geral
-            print(f"DEBUG: Erro na atualização: {str(e)}")  # ← DEBUG
+        except Exception as e:
             flash(f'Erro ao atualizar produção: {str(e)}', 'danger')
 
     return render_template('producao/editar.html', form=form, producao=producao)

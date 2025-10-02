@@ -23,4 +23,4 @@ class ProducaoForm(FlaskForm):
         NumberRange(min=0, message='A quantidade não pode ser negativa')
     ])
     observacoes = TextAreaField('Observações')
-    responsavel = StringField('Responsável', validators=[DataRequired()])  # ADICIONAR ESTE
+    responsavel = StringField('Responsável', validators=[DataRequired()])
