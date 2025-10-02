@@ -1,0 +1,171 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('aves.listar') }}">Aves</a></li>
+            <li class="breadcrumb-item active">Nova Ave</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">🐔 Cadastrar Nova Ave</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <!-- ID do Lote -->
+                            <div class="col-md-6 mb-3">
+                                {{ form.id_lote.label(class="form-label") }}
+                                {{ form.id_lote(class="form-control") }}
+                                {% if form.id_lote.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.id_lote.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Raça da Ave -->
+                            <div class="col-md-6 mb-3">
+                                {{ form.raca_ave.label(class="form-label") }}
+                                {{ form.raca_ave(class="form-select") }}
+                                {% if form.raca_ave.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.raca_ave.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Data de Nascimento -->
+                            <div class="col-md-6 mb-3">
+                                {{ form.data_nascimento.label(class="form-label") }}
+                                {{ form.data_nascimento(class="form-control") }}
+                                {% if form.data_nascimento.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.data_nascimento.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Tempo de Vida -->
+                            <div class="col-md-6 mb-3">
+                                {{ form.tempo_de_vida.label(class="form-label") }}
+                                <div class="input-group">
+                                    {{ form.tempo_de_vida(class="form-control") }}
+                                    <span class="input-group-text">dias</span>
+                                </div>
+                                {% if form.tempo_de_vida.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.tempo_de_vida.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Média de Peso -->
+                            <div class="col-md-6 mb-3">
+                                {{ form.media_peso.label(class="form-label") }}
+                                <div class="input-group">
+                                    {{ form.media_peso(class="form-control", step="0.01") }}
+                                    <span class="input-group-text">kg</span>
+                                </div>
+                                {% if form.media_peso.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.media_peso.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Tipo de Alojamento -->
+                            <div class="col-md-6 mb-3">
+                                {{ form.tipo_alojamento.label(class="form-label") }}
+                                {{ form.tipo_alojamento(class="form-select") }}
+                                {% if form.tipo_alojamento.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.tipo_alojamento.errors %}
+                                            <div>{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Características Genéticas -->
+                        <div class="mb-3">
+                            {{ form.caracteristicas_geneticas.label(class="form-label") }}
+                            {{ form.caracteristicas_geneticas(class="form-control", rows="3") }}
+                            <div class="form-text">Descreva características genéticas relevantes</div>
+                            {% if form.caracteristicas_geneticas.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.caracteristicas_geneticas.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Histórico de Vacinas -->
+                        <div class="mb-3">
+                            {{ form.historico_vacinas.label(class="form-label") }}
+                            {{ form.historico_vacinas(class="form-control", rows="3") }}
+                            <div class="form-text">Liste as vacinas aplicadas e datas</div>
+                            {% if form.historico_vacinas.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.historico_vacinas.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Observações -->
+                        <div class="mb-3">
+                            {{ form.observacoes.label(class="form-label") }}
+                            {{ form.observacoes(class="form-control", rows="2") }}
+                            <div class="form-text">Observações adicionais (opcional)</div>
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.observacoes.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Botões -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('aves.listar') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Cadastrar Ave
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

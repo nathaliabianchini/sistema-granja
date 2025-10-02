@@ -1,9 +1,7 @@
 import datetime
 from peewee import (SqliteDatabase, Model, AutoField, CharField, DateField, 
-                    BooleanField, IntegerField, DoubleField, TextField, ForeignKeyField)
+                    BooleanField, IntegerField, DoubleField, TextField, ForeignKeyField, DateTimeField)
 from enum import Enum
-
-from wtforms import DateTimeField
 
 db = SqliteDatabase('BD_Granja.db')
 
@@ -73,21 +71,25 @@ class RacaAve(Enum):
     HY_LINE_BROWN = "Hy-Line Brown"
     LOHMANN_BROWN = "Lohmann Brown"
     LEGHORN = "Leghorn"
-    
     RHODE_ISLAND_RED = "Rhode Island Red"
     EMBRAPA_051 = "Embrapa 051"
     NEW_HAMPSHIRE = "New Hampshire"
 
 class Aves(BaseModel):
     id_ave = AutoField()                                #PK
-    lote = ForeignKeyField(Lote, backref="aves")        #Lote de localização
-    raca = CharField(
-        choices = [member.value for member in RacaAve]
-    )
+    id_lote = CharField(max_length=50)                 
+    raca_ave = CharField(max_length=100)               
     data_nascimento = DateField()
-    tempo_de_vida = DoubleField()
+    tempo_de_vida = IntegerField()                     
     media_peso = DoubleField()
-    observacoes = TextField(null=True)  #Opcional / Características genéticas relevantes para a produção
+    caracteristicas_geneticas = TextField()            
+    tipo_alojamento = CharField(max_length=50)           
+    historico_vacinas = TextField()                    
+    observacoes = TextField(null=True)                 
+    ativa = BooleanField(default=True)                 
+    
+    class Meta:
+        table_name = 'aves'
 
 class TipoInsumo(Enum):
     RACAO = "Ração"
@@ -151,7 +153,7 @@ class UserActivityLog(BaseModel):
     usuario_id = IntegerField()  
     acao = CharField(max_length=100)
     detalhes = TextField(null=True)
-    data_acao = DateTimeField(default=lambda: datetime.now())
+    data_acao = DateTimeField(default=lambda: datetime.datetime.now())
     
     class Meta:
         table_name = 'user_activity_logs'
@@ -161,7 +163,7 @@ class Avisos(BaseModel):
     titulo = CharField(max_length=200)
     mensagem = TextField()
     tipo = CharField(max_length=50)  
-    data_criacao = DateTimeField(default=lambda: datetime.now())
+    data_criacao = DateTimeField(default=lambda: datetime.datetime.now())
     ativo = BooleanField(default=True)
     
     class Meta:
@@ -182,7 +184,7 @@ class HistoricoAvisos(BaseModel):
     aviso = ForeignKeyField(Avisos, backref='historicos')
     usuario_modificador = ForeignKeyField(Usuarios)
     acao = CharField(max_length=50)  
-    data_acao = DateTimeField(default=lambda: datetime.now())
+    data_acao = DateTimeField(default=lambda: datetime.datetime.now())
     
     class Meta:
         table_name = 'historico_avisos'
@@ -226,5 +228,9 @@ class StatusNotificacao(BaseModel):
     class Meta:
         table_name = 'status_notificacao'
 
+# Conectar ao banco e criar tabelas
 db.connect()
-db.create_tables([Granja, Usuarios, Insumo, Lote, Setor, Vacina, Aves, Producao, UserActivityLog, Avisos, NotificacaoUsuario, HistoricoAvisos, HistoricoProducao, CategoriaNotificacao, PrioridadeNotificacao, StatusNotificacao])
+db.create_tables([Granja, Usuarios, Insumo, Lote, Setor, Vacina, Aves, Producao, 
+                  UserActivityLog, Avisos, NotificacaoUsuario, HistoricoAvisos, 
+                  HistoricoProducao, CategoriaNotificacao, PrioridadeNotificacao, 
+                  StatusNotificacao], safe=True)

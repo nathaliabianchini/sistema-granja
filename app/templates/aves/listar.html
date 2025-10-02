@@ -1,0 +1,89 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Aves</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1 class="display-5">🐔 Gestão de Aves</h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{{ url_for('aves.cadastrar') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nova Ave
+            </a>
+        </div>
+    </div>
+
+    <!-- Lista de Aves -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Lista de Aves Cadastradas</h5>
+        </div>
+        <div class="card-body">
+            {% if aves %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Lote</th>
+                                <th>Raça</th>
+                                <th>Data Nascimento</th>
+                                <th>Peso (kg)</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ave in aves %}
+                            <tr>
+                                <td>{{ ave.id_ave }}</td>
+                                <td>{{ ave.id_lote }}</td>
+                                <td>{{ ave.raca_ave }}</td>
+                                <td>{{ ave.data_nascimento }}</td>
+                                <td>{{ ave.media_peso }}</td>
+                                <td>
+                                    {% if ave.ativa %}
+                                        <span class="badge bg-success">Ativa</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inativa</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('aves.editar', ave_id=ave.id_ave) }}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if session.user_tipo == 'administrador' %}
+                                    <form method="POST" action="{{ url_for('aves.excluir', ave_id=ave.id_ave) }}" 
+                                          style="display: inline;" 
+                                          onsubmit="return confirm('Confirma exclusão desta ave?')">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-dove fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Nenhuma ave cadastrada</h5>
+                    <p class="text-muted">Clique em "Nova Ave" para começar</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

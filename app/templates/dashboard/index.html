@@ -33,16 +33,16 @@
             </div>
         </div>
 
-        <!-- Módulo Animais -->
+        <!-- Módulo Aves -->
         <div class="col-lg-3 col-md-6">
             <div class="card h-100 shadow-sm hover-card">
                 <div class="card-body text-center">
                     <div class="mb-3">
                         <i class="fas fa-dove fa-3x text-primary"></i>
                     </div>
-                    <h5 class="card-title">Animais</h5>
+                    <h5 class="card-title">Aves</h5>
                     <p class="card-text">Gestão de aves, lotes, raças e controle sanitário.</p>
-                    <a href="#" class="btn btn-primary" onclick="moduleNotReady('Animais')">
+                    <a href="{{ url_for('aves.listar') }}" class="btn btn-primary">
                         <i class="fas fa-arrow-right"></i> Acessar
                     </a>
                 </div>

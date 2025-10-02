@@ -14,6 +14,7 @@ def create_app():
     from app.routes.auth_routes import auth_bp
     from app.routes.dashboard_routes import dashboard_bp
     from app.routes.producao_routes import producao_web
+    from app.routes.aves_routes import aves_bp
     
     # Registrar blueprints API (JSON)
     from app.api.endpoints.producao_api import producao_api
@@ -22,7 +23,8 @@ def create_app():
     # Registrar todos os blueprints
     app.register_blueprint(auth_bp)                           
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')  
-    app.register_blueprint(producao_web, url_prefix='/producoes') 
+    app.register_blueprint(producao_web, url_prefix='/producoes')
+    app.register_blueprint(aves_bp)
     app.register_blueprint(producao_api)                      
     app.register_blueprint(api_routes, url_prefix='/api')     
     
