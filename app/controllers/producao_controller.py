@@ -6,9 +6,9 @@ from app.exceptions import BusinessError
 
 class ProducaoController:
     @staticmethod
-    def criar_producao(lote_id: int, data_coleta: datetime, quantidade_aves: int,
+    def criar_producao(lote_id: str, data_coleta: datetime, quantidade_aves: int,  # ✅ CORRIGIDO: int → str
                       quantidade_ovos: int, qualidade_producao: str,
-                      producao_nao_aproveitada: int, responsavel: str, observacoes: str = None) -> Producao:         # Cria um novo registro de produção
+                      producao_nao_aproveitada: int, responsavel: str, observacoes: str = None) -> Producao:
        
         if quantidade_aves <= 0:
             raise BusinessError("quantidade_aves deve ser maior que zero")
@@ -19,7 +19,7 @@ class ProducaoController:
 
         try:
             return Producao.create(
-                lote_id=lote_id,
+                id_lote=lote_id,  # ✅ JÁ ESTAVA CORRETO
                 data_coleta=data_coleta,
                 quantidade_aves=quantidade_aves,
                 quantidade_ovos=quantidade_ovos,
@@ -32,7 +32,7 @@ class ProducaoController:
             raise Exception(f'Erro ao criar registro de produção: {str(e)}')
 
     @staticmethod
-    def excluir_producao(producao_id: int) -> bool:                             # Exclui um registro de produção
+    def excluir_producao(producao_id: int) -> bool:
         try:
             query = Producao.delete().where(Producao.id_producao == producao_id)
             return query.execute() > 0
@@ -40,19 +40,19 @@ class ProducaoController:
             raise Exception(f'Erro ao excluir produção: {str(e)}')
 
     @staticmethod
-    def buscar_por_id(producao_id: int) -> Optional[Producao]:                  # Busca uma produção pelo ID
+    def buscar_por_id(producao_id: int) -> Optional[Producao]:
         return Producao.get_or_none(Producao.id_producao == producao_id)
 
     @staticmethod
-    def listar_todos() -> List[Producao]:                                       # Lista todos os registros de produção
+    def listar_todos() -> List[Producao]:
         return list(Producao.select().order_by(Producao.data_coleta.desc()))
 
     @staticmethod
-    def listar_por_lote(lote_id: int) -> List[Producao]:                        # Lista produções de um lote específico
-        return list(Producao.select().where(Producao.lote_id == lote_id))
+    def listar_por_lote(lote_id: str) -> List[Producao]:  # ✅ CORRIGIDO: int → str
+        return list(Producao.select().where(Producao.id_lote == lote_id))  # ✅ CORRIGIDO: lote_id → id_lote
 
     @staticmethod
-    def atualizar(producao_id: int, **kwargs) -> bool:                          # Atualiza um registro de produção
+    def atualizar(producao_id: int, **kwargs) -> bool:
         try:
             query = Producao.update(**kwargs).where(Producao.id_producao == producao_id)
             return query.execute() > 0
@@ -60,7 +60,7 @@ class ProducaoController:
             raise Exception(f'Erro ao atualizar produção: {str(e)}')
 
     @staticmethod
-    def deletar(producao_id: int) -> bool:                                      # Deleta um registro de produção
+    def deletar(producao_id: int) -> bool:
         try:
             query = Producao.delete().where(Producao.id_producao == producao_id)
             return query.execute() > 0
@@ -68,7 +68,7 @@ class ProducaoController:
             raise Exception(f'Erro ao deletar produção: {str(e)}')
 
     @staticmethod
-    def calcular_estatisticas_periodo(data_inicio: datetime, data_fim: datetime) -> dict:   # Calcula estatísticas de produção para um período específico
+    def calcular_estatisticas_periodo(data_inicio: datetime, data_fim: datetime) -> dict:
         producoes = (Producao
                     .select()
                     .where(
@@ -88,26 +88,25 @@ class ProducaoController:
         }
 
     @staticmethod
-    def buscar_melhores_lotes(limite: int = 5) -> List[dict]:                    # Identifica os lotes com melhor desempenho de produção
+    def buscar_melhores_lotes(limite: int = 5) -> List[dict]:
         query = (Producao
                 .select(
-                    Producao.lote_id,
+                    Producao.id_lote,  # ✅ CORRIGIDO: lote_id → id_lote
                     fn.SUM(Producao.quantidade_ovos).alias('total_producao'),
                     fn.AVG(Producao.quantidade_ovos).alias('media_diaria')
                 )
-                .join(Lote, JOIN.LEFT_OUTER)
-                .group_by(Producao.lote_id)
+                .group_by(Producao.id_lote)  # ✅ CORRIGIDO: lote_id → id_lote
                 .order_by(fn.SUM(Producao.quantidade_ovos).desc())
                 .limit(limite))
         
         return [{
-            'lote_id': prod.lote_id,
+            'lote_id': prod.id_lote,  # ✅ CORRIGIDO: lote_id → id_lote
             'total_producao': int(prod.total_producao),
             'media_diaria': round(float(prod.media_diaria), 2)
         } for prod in query]
 
     @staticmethod
-    def verificar_baixa_producao(limite_percentual: float = 20.0) -> List[dict]:          # Verifica produções abaixo de um certo percentual da média geral
+    def verificar_baixa_producao(limite_percentual: float = 20.0) -> List[dict]:
         media_geral = (Producao
                       .select(fn.AVG(Producao.quantidade_ovos))
                       .scalar())
@@ -124,7 +123,7 @@ class ProducaoController:
 
         return [{
             'id_producao': p.id_producao,
-            'lote_id': p.lote_id,
+            'lote_id': p.id_lote,  # ✅ CORRIGIDO: lote_id → id_lote
             'data': p.data_coleta,
             'quantidade': p.quantidade_ovos,
             'percentual_abaixo': round((1 - p.quantidade_ovos/media_geral) * 100, 2)

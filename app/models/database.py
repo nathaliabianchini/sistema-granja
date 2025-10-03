@@ -141,7 +141,7 @@ class Producao(BaseModel):
     quantidade_aves = IntegerField()
     qualidade_producao = CharField(max_length=50)
     producao_nao_aproveitada = IntegerField(default=0)
-    lote = ForeignKeyField(Lote, backref='producoes')
+    id_lote = CharField(max_length=50)  # ✅ CAMPO LIVRE COMO AVES
     observacoes = TextField(null=True)
     responsavel = CharField(max_length=100)
 

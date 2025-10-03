@@ -1,10 +1,15 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, DateField, SelectField, TextAreaField, StringField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange, Length
 from app.models.database import QualidadeProducao
 
 class ProducaoForm(FlaskForm):
-    lote = SelectField('Lote', coerce=int, validators=[DataRequired()])
+    # ✅ CORRIGIDO
+    id_lote = StringField('Lote', validators=[
+        DataRequired(),
+        Length(min=1, max=50, message='O lote deve ter entre 1 e 50 caracteres')
+    ])
+    
     data_coleta = DateField('Data da Coleta', validators=[DataRequired()])
     quantidade_aves = IntegerField('Quantidade de Aves', validators=[
         DataRequired(),

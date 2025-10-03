@@ -16,13 +16,13 @@
                     <form method="post">
                         {{ form.hidden_tag() }}
                         
-                        <!-- TODOS OS SEUS CAMPOS MANTIDOS -->
+                        <!-- ✅ CORRIGIDO: CAMPO LOTE AGORA É EDITÁVEL -->
                         <div class="mb-3">
-                            {{ form.lote.label(class="form-label") }}
-                            {{ form.lote(class="form-control") }}
-                            {% if form.lote.errors %}
+                            {{ form.id_lote.label(class="form-label") }}
+                            {{ form.id_lote(class="form-control", placeholder="Ex: LOTE001") }}
+                            {% if form.id_lote.errors %}
                                 <div class="text-danger">
-                                    {% for error in form.lote.errors %}
+                                    {% for error in form.id_lote.errors %}
                                         <small>{{ error }}</small>
                                     {% endfor %}
                                 </div>
