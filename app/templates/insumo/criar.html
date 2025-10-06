@@ -1,0 +1,203 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1><i class="fas fa-plus"></i> Novo Insumo</h1>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    {{ form.nome.label(class="form-label") }}
+                                    {{ form.nome(class="form-control") }}
+                                    {% if form.nome.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.nome.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.categoria.label(class="form-label") }}
+                                    {{ form.categoria(class="form-select") }}
+                                    {% if form.categoria.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.categoria.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.unidade.label(class="form-label") }}
+                                    {{ form.unidade(class="form-select") }}
+                                    {% if form.unidade.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.unidade.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.quantidade_inicial.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.quantidade_inicial(class="form-control") }}
+                                        <span class="input-group-text">
+                                            <i class="fas fa-box"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.quantidade_inicial.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.quantidade_inicial.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Quantidade que será registrada como estoque inicial
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.quantidade_minima.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.quantidade_minima(class="form-control") }}
+                                        <span class="input-group-text">
+                                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.quantidade_minima.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.quantidade_minima.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Quantidade mínima para alertas de reposição
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.data_validade.label(class="form-label") }}
+                                    {{ form.data_validade(class="form-control") }}
+                                    {% if form.data_validade.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.data_validade.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Opcional - para produtos perecíveis
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.observacoes.label(class="form-label") }}
+                            {{ form.observacoes(class="form-control", rows="3", placeholder="Informações adicionais sobre o insumo...") }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.observacoes.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Criar Insumo
+                            </button>
+                            <a href="{{ url_for('insumo_web.listar') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Painel de Ajuda -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Ajuda</h5>
+                </div>
+                <div class="card-body">
+                    <h6><i class="fas fa-lightbulb text-warning"></i> Dicas:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success"></i> Use nomes descritivos para facilitar a busca</li>
+                        <li><i class="fas fa-check text-success"></i> A quantidade inicial gerará uma movimentação automática</li>
+                        <li><i class="fas fa-check text-success"></i> Configure alertas com a quantidade mínima</li>
+                        <li><i class="fas fa-check text-success"></i> Data de validade é opcional</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h6><i class="fas fa-tags text-primary"></i> Categorias:</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        <span class="badge bg-primary">Ração</span>
+                        <span class="badge bg-info">Medicamento</span>
+                        <span class="badge bg-success">Suplemento</span>
+                        <span class="badge bg-warning">Equipamento</span>
+                        <span class="badge bg-secondary">Limpeza</span>
+                        <span class="badge bg-dark">Outros</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6><i class="fas fa-ruler text-info"></i> Unidades de Medida</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">Peso:</small><br>
+                            <span class="badge bg-outline-secondary">kg</span>
+                            <span class="badge bg-outline-secondary">g</span>
+                            <span class="badge bg-outline-secondary">t</span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Volume:</small><br>
+                            <span class="badge bg-outline-secondary">L</span>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <small class="text-muted">Quantidade:</small><br>
+                            <span class="badge bg-outline-secondary">un</span>
+                            <span class="badge bg-outline-secondary">caixa</span>
+                            <span class="badge bg-outline-secondary">saco</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

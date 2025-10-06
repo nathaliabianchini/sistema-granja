@@ -1,0 +1,314 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-calendar-times text-warning"></i> Relatório - Vencimentos Próximos</h1>
+        <div>
+            <div class="btn-group me-2">
+                <a href="{{ url_for('insumo_web.relatorio_vencimentos') }}?dias=7" 
+                   class="btn {% if dias == 7 %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    7 dias
+                </a>
+                <a href="{{ url_for('insumo_web.relatorio_vencimentos') }}?dias=15" 
+                   class="btn {% if dias == 15 %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    15 dias
+                </a>
+                <a href="{{ url_for('insumo_web.relatorio_vencimentos') }}?dias=30" 
+                   class="btn {% if dias == 30 %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    30 dias
+                </a>
+            </div>
+            <button onclick="window.print()" class="btn btn-outline-primary">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+            <a href="{{ url_for('insumo_web.relatorios') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+
+    <!-- ✅ BOTÕES DE EXPORTAÇÃO -->
+        <div class="dropdown d-inline-block me-2">
+            <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-download"></i> Exportar
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_vencimentos', formato='csv') }}?dias={{ dias }}">
+                    <i class="fas fa-file-csv"></i> CSV
+                </a></li>
+                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_vencimentos', formato='excel') }}?dias={{ dias }}">
+                    <i class="fas fa-file-excel"></i> Excel
+                </a></li>
+                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_vencimentos', formato='pdf') }}?dias={{ dias }}">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a></li>
+            </ul>
+        </div>
+        
+        <button onclick="window.print()" class="btn btn-outline-primary">
+            <i class="fas fa-print"></i> Imprimir
+        </button>
+        <a href="{{ url_for('insumo_web.relatorios') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+
+    <!-- Resumo -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h2>{{ insumos|selectattr('data_validade')|select('lessthan', today, 'data_validade')|list|length }}</h2>
+                    <p class="mb-0">Já Vencidos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h2>{{ insumos|length }}</h2>
+                    <p class="mb-0">Vencendo em {{ dias }} dias</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    {% set valor_total = 0 %}
+                    {% for insumo in insumos %}
+                        {% set valor_total = valor_total + (insumo.quantidade_atual * 10) %}
+                    {% endfor %}
+                    <h2>R$ {{ "%.2f"|format(valor_total) }}</h2>
+                    <p class="mb-0">Valor Estimado*</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-secondary text-white">
+                <div class="card-body text-center">
+                    <h2>{{ today.strftime("%d/%m/%Y") }}</h2>
+                    <p class="mb-0">Data do Relatório</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Vencimentos -->
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-list"></i> Insumos com Vencimento em {{ dias }} dias</h5>
+        </div>
+        <div class="card-body">
+            {% if insumos %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Urgência</th>
+                                <th>Insumo</th>
+                                <th>Categoria</th>
+                                <th>Quantidade</th>
+                                <th>Data de Validade</th>
+                                <th>Dias Restantes</th>
+                                <th>Valor Estimado*</th>
+                                <th>Ações Sugeridas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for insumo in insumos|sort(attribute='data_validade') %}
+                                {% set dias_restantes = (insumo.data_validade - today).days %}
+                                {% set valor_estimado = insumo.quantidade_atual * 10 %}
+                                <tr class="{% if dias_restantes <= 0 %}table-danger{% elif dias_restantes <= 3 %}table-warning{% endif %}">
+                                    <td>
+                                        {% if dias_restantes <= 0 %}
+                                            <span class="badge bg-danger">VENCIDO</span>
+                                        {% elif dias_restantes <= 3 %}
+                                            <span class="badge bg-warning">CRÍTICO</span>
+                                        {% elif dias_restantes <= 7 %}
+                                            <span class="badge bg-info">ATENÇÃO</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">NORMAL</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ insumo.nome }}</strong>
+                                        {% if insumo.observacoes %}
+                                            <br><small class="text-muted">{{ insumo.observacoes[:50] }}{% if insumo.observacoes|length > 50 %}...{% endif %}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ insumo.categoria }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ insumo.quantidade_atual }} {{ insumo.unidade }}</strong>
+                                        {% if insumo.quantidade_atual < insumo.quantidade_minima %}
+                                            <br><small class="text-danger">Abaixo do mínimo!</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong class="{% if dias_restantes <= 0 %}text-danger{% elif dias_restantes <= 7 %}text-warning{% endif %}">
+                                            {{ insumo.data_validade.strftime("%d/%m/%Y") }}
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        {% if dias_restantes <= 0 %}
+                                            <span class="badge bg-danger">{{ dias_restantes * -1 }} dias atrás</span>
+                                        {% elif dias_restantes == 0 %}
+                                            <span class="badge bg-warning">HOJE</span>
+                                        {% elif dias_restantes == 1 %}
+                                            <span class="badge bg-warning">AMANHÃ</span>
+                                        {% else %}
+                                            <span class="badge bg-info">{{ dias_restantes }} dias</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">R$ {{ "%.2f"|format(valor_estimado) }}</span>
+                                    </td>
+                                    <td>
+                                        {% if dias_restantes <= 0 %}
+                                            <small class="text-danger">
+                                                <i class="fas fa-trash"></i> Descartar<br>
+                                                <i class="fas fa-clipboard-check"></i> Verificar qualidade
+                                            </small>
+                                        {% elif dias_restantes <= 3 %}
+                                            <small class="text-warning">
+                                                <i class="fas fa-shipping-fast"></i> Usar rapidamente<br>
+                                                <i class="fas fa-gift"></i> Doação
+                                            </small>
+                                        {% elif dias_restantes <= 7 %}
+                                            <small class="text-info">
+                                                <i class="fas fa-calendar-check"></i> Priorizar uso<br>
+                                                <i class="fas fa-percentage"></i> Promoção
+                                            </small>
+                                        {% else %}
+                                            <small class="text-success">
+                                                <i class="fas fa-eye"></i> Monitorar
+                                            </small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            {% if dias_restantes <= 0 or dias_restantes <= 3 %}
+                                                <a href="{{ url_for('insumo_web.nova_movimentacao') }}?insumo_id={{ insumo.id_insumo }}&tipo=Saída - Perda" 
+                                                   class="btn btn-danger btn-sm" title="Registrar Perda">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            {% endif %}
+                                            <a href="{{ url_for('insumo_web.nova_movimentacao') }}?insumo_id={{ insumo.id_insumo }}&tipo=Saída - Uso" 
+                                               class="btn btn-warning btn-sm" title="Registrar Uso">
+                                                <i class="fas fa-minus"></i>
+                                            </a>
+                                            <a href="{{ url_for('insumo_web.editar', id_insumo=insumo.id_insumo) }}" 
+                                               class="btn btn-primary btn-sm" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <small class="text-muted">
+                        * Valores estimados baseados em custo médio de R$ 10,00 por unidade para fins de relatório.
+                    </small>
+                </div>
+
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-check fa-4x text-success mb-3"></i>
+                    <h3 class="text-success">Ótimo!</h3>
+                    <p class="text-muted mb-4">Nenhum insumo vencendo nos próximos {{ dias }} dias.</p>
+                    <a href="{{ url_for('insumo_web.listar') }}" class="btn btn-success">
+                        <i class="fas fa-boxes"></i> Ver Todos os Insumos
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Gráfico de Vencimentos por Categoria -->
+    {% if insumos %}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-chart-pie"></i> Vencimentos por Categoria</h6>
+                </div>
+                <div class="card-body">
+                    {% set categorias_vencimento = {} %}
+                    {% for insumo in insumos %}
+                        {% if categorias_vencimento.update({insumo.categoria: categorias_vencimento.get(insumo.categoria, 0) + 1}) %}{% endif %}
+                    {% endfor %}
+                    
+                    {% for categoria, count in categorias_vencimento.items() %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ categoria }}</span>
+                                <span><strong>{{ count }}</strong></span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                {% set percentual_categoria = ((count / insumos|length * 100)|round|int) %}
+                                <div class="progress-bar bg-warning" 
+                                    data-width="{{ percentual_categoria }}"></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-calendar-alt"></i> Cronograma de Vencimentos</h6>
+                </div>
+                <div class="card-body">
+                    {% set cronograma = {} %}
+                    {% for insumo in insumos %}
+                        {% set dias_restantes = (insumo.data_validade - today).days %}
+                        {% set periodo = 'Vencidos' if dias_restantes <= 0 else ('0-3 dias' if dias_restantes <= 3 else ('4-7 dias' if dias_restantes <= 7 else ('8-15 dias' if dias_restantes <= 15 else '16-30 dias'))) %}
+                        {% if cronograma.update({periodo: cronograma.get(periodo, 0) + 1}) %}{% endif %}
+                    {% endfor %}
+                    
+                    {% for periodo, count in cronograma.items() %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ periodo }}</span>
+                                <span><strong>{{ count }} insumos</strong></span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+@media print {
+    .btn, .card-header { 
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Aplicar larguras das barras de progresso
+    document.querySelectorAll('.progress-bar').forEach(function(bar) {
+        const width = bar.getAttribute('data-width');
+        if (width) {
+            bar.style.width = width + '%';
+        }
+    });
+});
+</script>
+
+{% endblock %}

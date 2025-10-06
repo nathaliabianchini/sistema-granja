@@ -1,0 +1,184 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-history"></i> Histórico de Movimentações</h1>
+        <div>
+            <a href="{{ url_for('insumo_web.nova_movimentacao') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Nova Movimentação
+            </a>
+            <a href="{{ url_for('insumo_web.listar') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar aos Insumos
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5><i class="fas fa-filter"></i> Filtros</h5>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Insumo</label>
+                        <select name="insumo_id" class="form-select">
+                            <option value="">Todos os Insumos</option>
+                            {% for insumo in insumos %}
+                                <option value="{{ insumo.id_insumo }}" 
+                                    {% if filtros.insumo_id == insumo.id_insumo %}selected{% endif %}>
+                                    {{ insumo.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label class="form-label">Tipo</label>
+                        <select name="tipo" class="form-select">
+                            <option value="">Todos os Tipos</option>
+                            {% for tipo in tipos %}
+                                <option value="{{ tipo.value }}" 
+                                    {% if filtros.tipo == tipo.value %}selected{% endif %}>
+                                    {{ tipo.value }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label class="form-label">Data Início</label>
+                        <input type="date" name="data_inicio" class="form-control" 
+                               value="{% if filtros.data_inicio %}{{ filtros.data_inicio.strftime('%Y-%m-%d') }}{% endif %}">
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label class="form-label">Data Fim</label>
+                        <input type="date" name="data_fim" class="form-control" 
+                               value="{% if filtros.data_fim %}{{ filtros.data_fim.strftime('%Y-%m-%d') }}{% endif %}">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                            <a href="{{ url_for('insumo_web.listar_movimentacoes') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Limpar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabela de Movimentações -->
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-list"></i> Movimentações</h5>
+        </div>
+        <div class="card-body">
+            {% if movimentacoes %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Insumo</th>
+                                <th>Tipo</th>
+                                <th>Quantidade</th>
+                                <th>Estoque</th>
+                                <th>Responsável</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mov in movimentacoes %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ mov.data_movimentacao.strftime("%d/%m/%Y") }}</strong><br>
+                                        <small class="text-muted">{{ mov.data_movimentacao.strftime("%H:%M") }}</small>
+                                    </td>
+                                    <td>
+                                        <strong>{{ mov.insumo.nome }}</strong><br>
+                                        <small class="text-muted">{{ mov.insumo.categoria }}</small>
+                                    </td>
+                                    <td>
+                                        {% set tipo_class = {
+                                            'Entrada - Compra': 'success',
+                                            'Entrada - Doação': 'info',
+                                            'Saída - Uso': 'warning',
+                                            'Saída - Perda': 'danger',
+                                            'Ajuste': 'primary'
+                                        } %}
+                                        <span class="badge bg-{{ tipo_class.get(mov.tipo, 'secondary') }}">
+                                            {{ mov.tipo }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            {% if mov.tipo.startswith('Entrada') or mov.tipo == 'Ajuste' %}
+                                                <span class="text-success">+{{ mov.quantidade }}</span>
+                                            {% else %}
+                                                <span class="text-danger">-{{ mov.quantidade }}</span>
+                                            {% endif %}
+                                            {{ mov.insumo.unidade }}
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ mov.estoque_anterior }} → </small>
+                                        <strong>{{ mov.estoque_posterior }} {{ mov.insumo.unidade }}</strong>
+                                    </td>
+                                    <td>
+                                        {% if mov.usuario %}
+                                            {{ mov.usuario.nome }}
+                                        {% else %}
+                                            <span class="text-muted">Sistema</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if mov.observacoes %}
+                                            <span data-bs-toggle="tooltip" 
+                                                  title="{{ mov.observacoes }}"
+                                                  class="text-truncate d-inline-block" 
+                                                  style="max-width: 200px;">
+                                                {{ mov.observacoes }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Nenhuma movimentação encontrada</h4>
+                    <p class="text-muted">Registre a primeira movimentação clicando no botão "Nova Movimentação"</p>
+                    <a href="{{ url_for('insumo_web.nova_movimentacao') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Nova Movimentação
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Inicializar tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

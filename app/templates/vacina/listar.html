@@ -60,7 +60,6 @@
                                        title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <!-- ✅ CORRIGIR SINTAXE AQUI -->
                                     <button class="btn btn-outline-danger" 
                                             data-id="{{ vacina.id_vacinacao }}"
                                             onclick="excluirVacina(this.getAttribute('data-id'))"
@@ -114,7 +113,6 @@
 </div>
 
 <script>
-// ✅ FUNÇÃO CORRIGIDA
 function excluirVacina(id) {
     const deleteForm = document.getElementById('deleteForm');
     deleteForm.action = '/vacinas/' + id + '/excluir';

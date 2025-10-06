@@ -1,0 +1,301 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-boxes"></i> Materiais e Insumos</h1>
+        <div>
+            <a href="{{ url_for('insumo_web.nova_movimentacao') }}" class="btn btn-warning">
+                <i class="fas fa-exchange-alt"></i> Nova Movimentação
+            </a>
+            <a href="{{ url_for('insumo_web.criar') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Novo Insumo
+            </a>
+        </div>
+    </div>
+
+    <!-- Cards de Estatísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ total_insumos }}</h4>
+                            <p class="mb-0">Total de Insumos</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-boxes fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ insumos_abaixo_minimo }}</h4>
+                            <p class="mb-0">Abaixo do Mínimo</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ insumos_vencendo }}</h4>
+                            <p class="mb-0">Vencendo (30 dias)</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-calendar-times fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4><i class="fas fa-chart-line"></i></h4>
+                            <p class="mb-0"><a href="{{ url_for('insumo_web.relatorios') }}" class="text-white">Ver Relatórios</a></p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-file-alt fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5><i class="fas fa-filter"></i> Filtros</h5>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="row">
+                    <div class="col-md-2">
+                        <select name="categoria" class="form-select">
+                            <option value="">Todas as Categorias</option>
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria.value }}" 
+                                    {% if filtros.categoria == categoria.value %}selected{% endif %}>
+                                    {{ categoria.value }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <select name="vencimento_dias" class="form-select">
+                            <option value="">Todos os Vencimentos</option>
+                            <option value="7" {% if filtros.vencimento_dias == 7 %}selected{% endif %}>
+                                Próximos 7 dias
+                            </option>
+                            <option value="15" {% if filtros.vencimento_dias == 15 %}selected{% endif %}>
+                                Próximos 15 dias
+                            </option>
+                            <option value="30" {% if filtros.vencimento_dias == 30 %}selected{% endif %}>
+                                Próximos 30 dias
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <select name="ativo" class="form-select">
+                            <option value="true" {% if filtros.ativo %}selected{% endif %}>Ativos</option>
+                            <option value="false" {% if not filtros.ativo %}selected{% endif %}>Inativos</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" name="abaixo_minimo" value="true"
+                                {% if filtros.abaixo_minimo %}checked{% endif %}>
+                            <label class="form-check-label">
+                                Abaixo do Mínimo
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                            <a href="{{ url_for('insumo_web.listar') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Limpar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabela de Insumos -->
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-list"></i> Lista de Insumos</h5>
+        </div>
+        <div class="card-body">
+            {% if insumos %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Estoque Atual</th>
+                                <th>Estoque Mínimo</th>
+                                <th>Validade</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for insumo in insumos %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ insumo.nome }}</strong>
+                                        {% if insumo.observacoes %}
+                                            <br><small class="text-muted">{{ insumo.observacoes[:50] }}{% if insumo.observacoes|length > 50 %}...{% endif %}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ insumo.categoria }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ insumo.quantidade_atual }} {{ insumo.unidade }}</strong>
+                                        {% if insumo.quantidade_atual < insumo.quantidade_minima %}
+                                            <br><span class="badge bg-danger">Abaixo do Mínimo!</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ insumo.quantidade_minima }} {{ insumo.unidade }}</td>
+                                    <td>
+                                        {% if insumo.data_validade %}
+                                            {% set dias_vencimento = (insumo.data_validade - today).days %}
+                                            <span class="badge 
+                                                {% if dias_vencimento <= 0 %}bg-danger
+                                                {% elif dias_vencimento <= 7 %}bg-warning
+                                                {% elif dias_vencimento <= 30 %}bg-info
+                                                {% else %}bg-success{% endif %}">
+                                                {{ insumo.data_validade.strftime("%d/%m/%Y") }}
+                                                {% if dias_vencimento <= 0 %}
+                                                    (VENCIDO)
+                                                {% elif dias_vencimento <= 30 %}
+                                                    ({{ dias_vencimento }} dias)
+                                                {% endif %}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">Sem validade</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if insumo.ativo %}
+                                            <span class="badge bg-success">Ativo</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inativo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('insumo_web.editar', id_insumo=insumo.id_insumo) }}" 
+                                               class="btn btn-outline-primary" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            
+                                            {% if insumo.ativo %}
+                                                <form method="post" action="{{ url_for('insumo_web.desativar', id_insumo=insumo.id_insumo) }}" 
+                                                      style="display: inline;">
+                                                    <button type="submit" class="btn btn-outline-danger" 
+                                                            title="Desativar" 
+                                                            onclick="return confirm('Tem certeza que deseja desativar este insumo?')">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <form method="post" action="{{ url_for('insumo_web.ativar', id_insumo=insumo.id_insumo) }}" 
+                                                      style="display: inline;">
+                                                    <button type="submit" class="btn btn-outline-success" 
+                                                            title="Ativar">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Nenhum insumo encontrado</h4>
+                    <p class="text-muted">Adicione seu primeiro insumo clicando no botão "Novo Insumo"</p>
+                    <a href="{{ url_for('insumo_web.criar') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Novo Insumo
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Links Rápidos -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-external-link-alt"></i> Links Rápidos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.listar_movimentacoes') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-history"></i><br>
+                                Histórico de Movimentações
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.relatorio_abaixo_minimo') }}" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-exclamation-triangle"></i><br>
+                                Relatório - Abaixo do Mínimo
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.relatorio_vencimentos') }}" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-calendar-times"></i><br>
+                                Relatório - Vencimentos
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.relatorio_consumo') }}" class="btn btn-outline-info w-100">
+                                <i class="fas fa-chart-line"></i><br>
+                                Relatório - Consumo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

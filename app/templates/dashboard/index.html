@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <!-- Módulo Insumos -->
+        <!-- ✅ MÓDULO INSUMOS - CORRIGIDO -->
         <div class="col-lg-3 col-md-6">
             <div class="card h-100 shadow-sm hover-card">
                 <div class="card-body text-center">
@@ -93,9 +93,32 @@
                     </div>
                     <h5 class="card-title">Insumos</h5>
                     <p class="card-text">Controle de estoque, materiais, rações e suprimentos.</p>
-                    <a href="#" class="btn btn-info" onclick="moduleNotReady('Insumos')">
-                        <i class="fas fa-arrow-right"></i> Acessar
-                    </a>
+                    
+                    <!-- ✅ DROPDOWN COM OPÇÕES DE INSUMOS -->
+                    <div class="dropdown">
+                        <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-arrow-right"></i> Acessar
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.listar') }}">
+                                <i class="fas fa-list"></i> Lista de Insumos
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.listar_movimentacoes') }}">
+                                <i class="fas fa-history"></i> Movimentações
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.criar') }}">
+                                <i class="fas fa-plus text-success"></i> Novo Insumo
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.nova_movimentacao') }}">
+                                <i class="fas fa-exchange-alt text-warning"></i> Nova Movimentação
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.relatorios') }}">
+                                <i class="fas fa-chart-line text-info"></i> Relatórios
+                            </a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -189,10 +212,4 @@
     transform: translateY(-5px);
 }
 </style>
-
-<script>
-function moduleNotReady(moduleName) {
-    alert('Módulo "' + moduleName + '" em desenvolvimento!\nEm breve estará disponível.');
-}
-</script>
 {% endblock %}

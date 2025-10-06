@@ -31,7 +31,7 @@
                     {% for p in producoes %}
                         <tr>
                             <td>{{ p.id_producao }}</td>
-                            <td>{{ p.id_lote }}</td>  <!-- ✅ CORRIGIDO: p.lote.numero_lote → p.id_lote -->
+                            <td>{{ p.id_lote }}</td> 
                             <td>{{ p.data_coleta.strftime("%d/%m/%Y") }}</td>
                             <td>{{ p.quantidade_aves }}</td>
                             <td>{{ p.quantidade_ovos }}</td>

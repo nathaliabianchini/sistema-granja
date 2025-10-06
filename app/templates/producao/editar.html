@@ -10,8 +10,6 @@
                 <div class="card-body">
                     <form method="post">
                         {{ form.hidden_tag() }}
-                        
-                        <!-- ✅ CORRIGIDO: form.lote → form.id_lote -->
                         <div class="mb-3">
                             {{ form.id_lote.label(class="form-label") }}
                             {{ form.id_lote(class="form-control", placeholder="Ex: LOTE001") }}

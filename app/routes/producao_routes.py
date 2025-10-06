@@ -62,7 +62,7 @@ def editar(producao_id: int):
     form = ProducaoForm(obj=producao)
 
     if request.method == 'GET':
-        form.id_lote.data = producao.id_lote  # Assumindo que o campo no model é id_lote
+        form.id_lote.data = producao.id_lote  
         
         if hasattr(producao.data_coleta, 'date'):
             form.data_coleta.data = producao.data_coleta.date()

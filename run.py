@@ -11,7 +11,7 @@ if __name__ == '__main__':
             host='127.0.0.1',
             port=5005,
             debug=True,
-            use_reloader=False  # Esta linha resolve o problema!
+            use_reloader=False 
         )
     except Exception as e:
         print(f"ERRO: {e}")

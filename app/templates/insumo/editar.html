@@ -1,0 +1,232 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1><i class="fas fa-edit"></i> Editar Insumo #{{ insumo.id_insumo }}</h1>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    {{ form.nome.label(class="form-label") }}
+                                    {{ form.nome(class="form-control") }}
+                                    {% if form.nome.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.nome.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.categoria.label(class="form-label") }}
+                                    {{ form.categoria(class="form-select") }}
+                                    {% if form.categoria.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.categoria.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.unidade.label(class="form-label") }}
+                                    {{ form.unidade(class="form-select") }}
+                                    {% if form.unidade.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.unidade.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.quantidade_minima.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.quantidade_minima(class="form-control") }}
+                                        <span class="input-group-text">
+                                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.quantidade_minima.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.quantidade_minima.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Estoque Atual</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" 
+                                               value="{{ insumo.quantidade_atual }} {{ insumo.unidade }}" 
+                                               readonly>
+                                        <span class="input-group-text">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Para alterar o estoque, use movimentações
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.data_validade.label(class="form-label") }}
+                                    {{ form.data_validade(class="form-control") }}
+                                    {% if form.data_validade.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.data_validade.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.observacoes.label(class="form-label") }}
+                            {{ form.observacoes(class="form-control", rows="3") }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.observacoes.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-sync-alt"></i> Atualizar Insumo
+                            </button>
+                            <a href="{{ url_for('insumo_web.listar') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash"></i> Desativar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações do Insumo -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Informações do Insumo</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>ID:</strong> {{ insumo.id_insumo }}</p>
+                    <p><strong>Nome:</strong> {{ insumo.nome }}</p>
+                    <p><strong>Categoria:</strong> <span class="badge bg-secondary">{{ insumo.categoria }}</span></p>
+                    <p><strong>Estoque Atual:</strong> 
+                        <span class="badge {% if insumo.quantidade_atual < insumo.quantidade_minima %}bg-danger{% else %}bg-success{% endif %}">
+                            {{ insumo.quantidade_atual }} {{ insumo.unidade }}
+                        </span>
+                    </p>
+                    <p><strong>Estoque Mínimo:</strong> {{ insumo.quantidade_minima }} {{ insumo.unidade }}</p>
+                    <p><strong>Validade:</strong> 
+                        {% if insumo.data_validade %}
+                            {% set dias = (insumo.data_validade - today).days %}
+                            <span class="badge {% if dias <= 0 %}bg-danger{% elif dias <= 7 %}bg-warning{% elif dias <= 30 %}bg-info{% else %}bg-success{% endif %}">
+                                {{ insumo.data_validade.strftime("%d/%m/%Y") }}
+                                {% if dias <= 0 %}(VENCIDO){% elif dias <= 30 %}({{ dias }} dias){% endif %}
+                            </span>
+                        {% else %}
+                            <span class="text-muted">Sem validade</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Criado em:</strong> {{ insumo.data_criacao.strftime("%d/%m/%Y às %H:%M") }}</p>
+                    <p><strong>Status:</strong> 
+                        {% if insumo.ativo %}
+                            <span class="badge bg-success">Ativo</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inativo</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Ações Rápidas -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6><i class="fas fa-bolt"></i> Ações Rápidas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('insumo_web.nova_movimentacao') }}?insumo_id={{ insumo.id_insumo }}" 
+                           class="btn btn-warning btn-sm">
+                            <i class="fas fa-exchange-alt"></i> Nova Movimentação
+                        </a>
+                        <a href="{{ url_for('insumo_web.listar_movimentacoes') }}?insumo_id={{ insumo.id_insumo }}" 
+                           class="btn btn-info btn-sm">
+                            <i class="fas fa-history"></i> Ver Histórico
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Desativação -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Desativação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tem certeza que deseja desativar este insumo?</strong></p>
+                <div class="bg-light p-3 rounded">
+                    <strong>ID:</strong> {{ insumo.id_insumo }}<br>
+                    <strong>Nome:</strong> {{ insumo.nome }}<br>
+                    <strong>Categoria:</strong> {{ insumo.categoria }}<br>
+                    <strong>Estoque Atual:</strong> {{ insumo.quantidade_atual }} {{ insumo.unidade }}
+                </div>
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Atenção:</strong> O insumo será desativado mas o histórico será preservado.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <form method="post" action="{{ url_for('insumo_web.desativar', id_insumo=insumo.id_insumo) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Desativar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -31,6 +31,5 @@ def validate_cpf(cpf):
 
 def log_user_activity(user_id, action, details=None):
     """Log de atividade do usuário"""
-    # Por enquanto, apenas print. Você pode implementar log em banco depois
     print(f"User {user_id}: {action} - {details}")
     return True

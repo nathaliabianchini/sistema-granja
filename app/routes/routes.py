@@ -271,7 +271,6 @@ def send_report_notification():
     except Exception as e:
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
-# BLUEPRINT SEPARADO PARA API DE PRODUÇÃO
 producao_api = Blueprint('producao_api', __name__, url_prefix='/api/producao')
 
 @producao_api.route('/', methods=['POST'])

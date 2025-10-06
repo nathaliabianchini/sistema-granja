@@ -15,14 +15,12 @@ def create_app():
     from app.routes.dashboard_routes import dashboard_bp
     from app.routes.producao_routes import producao_web
     from app.routes.aves_routes import aves_bp
-    
     from app.routes.estoque_vacina_routes import estoque_vacina_web
     from app.routes.vacina_routes import vacina_web 
-    
-    # Registrar blueprints API (JSON)
     from app.api.endpoints.producao_api import producao_api
     from app.routes.routes import bp as api_routes
-    
+    from app.routes.insumo_routes import insumo_web 
+
     # Registrar todos os blueprints
     app.register_blueprint(auth_bp)                           
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')  
@@ -34,6 +32,8 @@ def create_app():
     
     app.register_blueprint(producao_api)                      
     app.register_blueprint(api_routes, url_prefix='/api')     
+
+    app.register_blueprint(insumo_web, url_prefix='/insumos') 
     
     # Rota principal - VERIFICAR LOGIN PRIMEIRO
     @app.route('/')

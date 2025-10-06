@@ -1,0 +1,256 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-chart-line"></i> Relatórios de Materiais e Insumos</h1>
+        <a href="{{ url_for('insumo_web.listar') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar aos Insumos
+        </a>
+    </div>
+
+    <!-- Cards de Relatórios -->
+    <div class="row">
+        <!-- Relatório Abaixo do Mínimo -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Abaixo do Mínimo
+                    </h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text">
+                        Visualize todos os insumos que estão com estoque abaixo do nível mínimo configurado.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-danger fs-6">Crítico</span>
+                            <i class="fas fa-chart-bar fa-2x text-danger"></i>
+                        </div>
+                        <a href="{{ url_for('insumo_web.relatorio_abaixo_minimo') }}" 
+                           class="btn btn-danger w-100">
+                            <i class="fas fa-eye"></i> Ver Relatório
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório de Vencimentos -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-times"></i> Vencimentos Próximos
+                    </h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text">
+                        Lista insumos que estão próximos do vencimento para planejamento de uso.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-warning text-dark fs-6">Atenção</span>
+                            <i class="fas fa-clock fa-2x text-warning"></i>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('insumo_web.relatorio_vencimentos', dias=7) }}" 
+                               class="btn btn-warning">
+                                <i class="fas fa-eye"></i> Próximos 7 dias
+                            </a>
+                            <a href="{{ url_for('insumo_web.relatorio_vencimentos', dias=30) }}" 
+                               class="btn btn-outline-warning">
+                                <i class="fas fa-eye"></i> Próximos 30 dias
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório de Consumo -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line"></i> Consumo por Período
+                    </h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text">
+                        Analise o consumo de insumos por período e categoria para planejamento.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-info fs-6">Análise</span>
+                            <i class="fas fa-chart-area fa-2x text-info"></i>
+                        </div>
+                        <a href="{{ url_for('insumo_web.relatorio_consumo') }}" 
+                           class="btn btn-info w-100">
+                            <i class="fas fa-eye"></i> Ver Relatório
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório de Movimentações -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history"></i> Histórico Completo
+                    </h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text">
+                        Visualize todo o histórico de movimentações com filtros avançados.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-primary fs-6">Histórico</span>
+                            <i class="fas fa-list fa-2x text-primary"></i>
+                        </div>
+                        <a href="{{ url_for('insumo_web.listar_movimentacoes') }}" 
+                           class="btn btn-primary w-100">
+                            <i class="fas fa-eye"></i> Ver Histórico
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas Gerais -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie"></i> Visão Geral
+                    </h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text">
+                        Dashboard com estatísticas gerais e indicadores de desempenho.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-success fs-6">Dashboard</span>
+                            <i class="fas fa-tachometer-alt fa-2x text-success"></i>
+                        </div>
+                        <a href="{{ url_for('insumo_web.listar') }}" 
+                           class="btn btn-success w-100">
+                            <i class="fas fa-eye"></i> Ver Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ EXPORTAR DADOS - CORRIGIDO -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-secondary">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-download"></i> Exportar Dados
+                    </h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text">
+                        Exporte relatórios em diferentes formatos para análise externa.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-secondary fs-6">Export</span>
+                            <i class="fas fa-file-export fa-2x text-secondary"></i>
+                        </div>
+                        
+                        <!-- ✅ DROPDOWN COM OPÇÕES DE EXPORTAÇÃO -->
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-download"></i> Escolher Relatório
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                <li><h6 class="dropdown-header">Consumo por Período</h6></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_consumo', formato='csv') }}">
+                                    <i class="fas fa-file-csv text-success"></i> Consumo - CSV
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_consumo', formato='excel') }}">
+                                    <i class="fas fa-file-excel text-success"></i> Consumo - Excel
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_consumo', formato='pdf') }}">
+                                    <i class="fas fa-file-pdf text-danger"></i> Consumo - PDF
+                                </a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Abaixo do Mínimo</h6></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_abaixo_minimo', formato='csv') }}">
+                                    <i class="fas fa-file-csv text-success"></i> Estoque - CSV
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_abaixo_minimo', formato='excel') }}">
+                                    <i class="fas fa-file-excel text-success"></i> Estoque - Excel
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_abaixo_minimo', formato='pdf') }}">
+                                    <i class="fas fa-file-pdf text-danger"></i> Estoque - PDF
+                                </a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Vencimentos</h6></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_vencimentos', formato='csv') }}?dias=30">
+                                    <i class="fas fa-file-csv text-success"></i> Vencimentos - CSV
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_vencimentos', formato='excel') }}?dias=30">
+                                    <i class="fas fa-file-excel text-success"></i> Vencimentos - Excel
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('insumo_web.export_vencimentos', formato='pdf') }}?dias=30">
+                                    <i class="fas fa-file-pdf text-danger"></i> Vencimentos - PDF
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-bolt"></i> Ações Rápidas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.criar') }}" class="btn btn-outline-success w-100 mb-2">
+                                <i class="fas fa-plus"></i><br>
+                                Novo Insumo
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.nova_movimentacao') }}" class="btn btn-outline-warning w-100 mb-2">
+                                <i class="fas fa-exchange-alt"></i><br>
+                                Nova Movimentação
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.listar', abaixo_minimo='true') }}" class="btn btn-outline-danger w-100 mb-2">
+                                <i class="fas fa-exclamation-triangle"></i><br>
+                                Alertas de Estoque
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('insumo_web.listar', vencimento_dias=30) }}" class="btn btn-outline-info w-100 mb-2">
+                                <i class="fas fa-calendar-check"></i><br>
+                                Controle de Validade
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

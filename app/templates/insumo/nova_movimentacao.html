@@ -1,0 +1,226 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1><i class="fas fa-exchange-alt"></i> Nova Movimentação de Insumo</h1>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="movimentacaoForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.insumo_id.label(class="form-label") }}
+                                    {{ form.insumo_id(class="form-select", id="insumoSelect") }}
+                                    {% if form.insumo_id.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.insumo_id.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.tipo.label(class="form-label") }}
+                                    {{ form.tipo(class="form-select", id="tipoSelect") }}
+                                    {% if form.tipo.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.tipo.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.quantidade.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.quantidade(class="form-control", id="quantidadeInput") }}
+                                        <span class="input-group-text" id="unidadeDisplay">
+                                            <i class="fas fa-balance-scale"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.quantidade.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.quantidade.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Digite a quantidade a ser movimentada
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.data_movimentacao.label(class="form-label") }}
+                                    {{ form.data_movimentacao(class="form-control") }}
+                                    {% if form.data_movimentacao.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.data_movimentacao.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.observacoes.label(class="form-label") }}
+                            {{ form.observacoes(class="form-control", rows="3", placeholder="Descreva o motivo da movimentação...") }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.observacoes.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div id="observacaoAlerta" class="alert alert-warning mt-2" style="display: none;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Observação obrigatória</strong> para movimentações de perda!
+                            </div>
+                        </div>
+                        
+                        <!-- Preview da Movimentação -->
+                        <div id="previewMovimentacao" class="card bg-light" style="display: none;">
+                            <div class="card-header">
+                                <h6><i class="fas fa-eye"></i> Preview da Movimentação</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Estoque Atual:</strong> <span id="estoqueAtual">-</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Novo Estoque:</strong> <span id="novoEstoque">-</span>
+                                    </div>
+                                </div>
+                                <div id="alertaEstoque" class="alert alert-danger mt-2" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Atenção:</strong> Estoque insuficiente para esta operação!
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success" id="btnSalvar">
+                                <i class="fas fa-save"></i> Registrar Movimentação
+                            </button>
+                            <a href="{{ url_for('insumo_web.listar_movimentacoes') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Painel de Ajuda -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Tipos de Movimentação</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-success"><i class="fas fa-arrow-up"></i> Entradas</h6>
+                        <ul class="list-unstyled">
+                            <li><span class="badge bg-success">Compra</span> - Aquisição de produtos</li>
+                            <li><span class="badge bg-info">Doação</span> - Recebimento de doações</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-danger"><i class="fas fa-arrow-down"></i> Saídas</h6>
+                        <ul class="list-unstyled">
+                            <li><span class="badge bg-warning">Uso</span> - Consumo normal</li>
+                            <li><span class="badge bg-danger">Perda</span> - Vencimento, quebra, etc.</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h6 class="text-primary"><i class="fas fa-adjust"></i> Ajustes</h6>
+                        <ul class="list-unstyled">
+                            <li><span class="badge bg-primary">Ajuste</span> - Correção de inventário</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6><i class="fas fa-lightbulb text-warning"></i> Dicas</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success"></i> Sempre descreva o motivo da movimentação</li>
+                        <li><i class="fas fa-check text-success"></i> Para perdas, a observação é obrigatória</li>
+                        <li><i class="fas fa-check text-success"></i> Ajustes alteram o estoque para a quantidade exata</li>
+                        <li><i class="fas fa-check text-success"></i> Data não pode ser futura</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const insumoSelect = document.getElementById('insumoSelect');
+    const tipoSelect = document.getElementById('tipoSelect');
+    const quantidadeInput = document.getElementById('quantidadeInput');
+    const observacaoAlerta = document.getElementById('observacaoAlerta');
+    const previewMovimentacao = document.getElementById('previewMovimentacao');
+    const estoqueAtualSpan = document.getElementById('estoqueAtual');
+    const novoEstoqueSpan = document.getElementById('novoEstoque');
+    const alertaEstoque = document.getElementById('alertaEstoque');
+    const unidadeDisplay = document.getElementById('unidadeDisplay');
+    
+    const insumosData = {};
+    
+    function atualizarPreview() {
+        const insumoId = insumoSelect.value;
+        const tipo = tipoSelect.value;
+        const quantidade = parseFloat(quantidadeInput.value) || 0;
+        
+        if (insumoId && tipo && quantidade > 0) {
+            previewMovimentacao.style.display = 'block';
+        } else {
+            previewMovimentacao.style.display = 'none';
+        }
+    }
+    
+    function verificarObservacaoObrigatoria() {
+        const tipo = tipoSelect.value;
+        if (tipo === 'Saída - Perda') {
+            observacaoAlerta.style.display = 'block';
+        } else {
+            observacaoAlerta.style.display = 'none';
+        }
+    }
+    
+    insumoSelect.addEventListener('change', atualizarPreview);
+    tipoSelect.addEventListener('change', function() {
+        verificarObservacaoObrigatoria();
+        atualizarPreview();
+    });
+    quantidadeInput.addEventListener('input', atualizarPreview);
+    
+    // Verificação inicial
+    verificarObservacaoObrigatoria();
+});
+</script>
+{% endblock %}

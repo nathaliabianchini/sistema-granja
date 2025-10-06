@@ -62,6 +62,32 @@
                             </a></li>
                         </ul>
                     </li>
+                    
+                    <!-- ✅ MENU DE INSUMOS -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-boxes"></i> Materiais
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.listar') }}">
+                                <i class="fas fa-list"></i> Lista de Insumos
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.listar_movimentacoes') }}">
+                                <i class="fas fa-history"></i> Movimentações
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.criar') }}">
+                                <i class="fas fa-plus text-success"></i> Novo Insumo
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.nova_movimentacao') }}">
+                                <i class="fas fa-exchange-alt text-warning"></i> Nova Movimentação
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('insumo_web.relatorios') }}">
+                                <i class="fas fa-chart-line text-info"></i> Relatórios
+                            </a></li>
+                        </ul>
+                    </li>
                 </ul>
                 
                 <!-- ✅ MENU DO USUÁRIO (DIREITA) -->

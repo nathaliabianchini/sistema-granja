@@ -1,6 +1,7 @@
 import datetime
 from peewee import (SqliteDatabase, Model, AutoField, CharField, DateField, 
-                    BooleanField, IntegerField, DoubleField, TextField, ForeignKeyField, DateTimeField)
+                    BooleanField, IntegerField, DoubleField, TextField, ForeignKeyField, 
+                    DateTimeField, DecimalField)
 from enum import Enum
 
 db = SqliteDatabase('BD_Granja.db')
@@ -91,11 +92,67 @@ class Aves(BaseModel):
     class Meta:
         table_name = 'aves'
 
+class CategoriaInsumo(Enum):
+    RACAO = "Ração"
+    MEDICAMENTO = "Medicamento"
+    SUPLEMENTO = "Suplemento"
+    EQUIPAMENTO = "Equipamento"
+    LIMPEZA = "Limpeza"
+    MANUTENCAO = "Manutenção"
+    EMBALAGEM = "Embalagem"
+    OUTROS = "Outros"
+
+class TipoMovimentacao(Enum):
+    ENTRADA_COMPRA = "Entrada - Compra"
+    ENTRADA_DOACAO = "Entrada - Doação"
+    SAIDA_USO = "Saída - Uso"
+    SAIDA_PERDA = "Saída - Perda"
+    AJUSTE = "Ajuste"
+
+class UnidadeMedida(Enum):
+    KG = "kg"
+    LITRO = "L"
+    UNIDADE = "un"
+    GRAMAS = "g"
+    TONELADA = "t"
+    SACO = "saco"
+    CAIXA = "caixa"
+
 class TipoInsumo(Enum):
     RACAO = "Ração"
     MEDICAMENTOS = "Medicamentos"
     FERRAMENTAS = "Ferramentas"
     EQUIPAMENTOS = "Equipamentos"
+
+class InsumoNovo(BaseModel):
+    id_insumo = AutoField()
+    nome = CharField(max_length=100)
+    categoria = CharField(max_length=50, choices=[(c.value, c.value) for c in CategoriaInsumo])
+    unidade = CharField(max_length=10, choices=[(u.value, u.value) for u in UnidadeMedida])
+    quantidade_atual = DecimalField(max_digits=10, decimal_places=2, default=0)
+    quantidade_minima = DecimalField(max_digits=10, decimal_places=2, default=0)
+    data_validade = DateField(null=True)
+    observacoes = TextField(null=True)
+    ativo = BooleanField(default=True)
+    data_criacao = DateTimeField(default=datetime.datetime.now)
+    usuario_criacao = ForeignKeyField(Usuarios, backref='insumos_criados', null=True)
+
+    class Meta:
+        table_name = 'insumos_novo'
+
+class MovimentacaoInsumo(BaseModel):
+    id_movimentacao = AutoField()
+    insumo = ForeignKeyField(InsumoNovo, backref='movimentacoes')
+    tipo = CharField(max_length=50, choices=[(t.value, t.value) for t in TipoMovimentacao])
+    quantidade = DecimalField(max_digits=10, decimal_places=2)
+    data_movimentacao = DateTimeField(default=datetime.datetime.now)
+    observacoes = TextField(null=True)
+    usuarios = ForeignKeyField(Usuarios, backref='movimentacoes_insumo')
+    estoque_anterior = DecimalField(max_digits=10, decimal_places=2)
+    estoque_posterior = DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        table_name = 'movimentacoes_insumo'
     
 class Insumo(BaseModel):
     id_insumo = AutoField()                             #PK
@@ -254,7 +311,8 @@ class StatusNotificacao(BaseModel):
         table_name = 'status_notificacao'
 
 db.connect()
-db.create_tables([Granja, Usuarios, Insumo, Lote, Setor, EstoqueVacina, Vacinacao, Aves, Producao, 
+db.create_tables([Granja, Usuarios, Insumo, InsumoNovo, MovimentacaoInsumo, Lote, Setor, 
+                  EstoqueVacina, Vacinacao, Aves, Producao, 
                   UserActivityLog, Avisos, NotificacaoUsuario, HistoricoAvisos, 
                   HistoricoProducao, CategoriaNotificacao, PrioridadeNotificacao, 
                   StatusNotificacao], safe=True)

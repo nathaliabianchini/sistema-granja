@@ -11,3 +11,5 @@ PyJWT==2.8.0
 Flask-WTF==1.1.1
 WTForms==3.0.1
 peewee==3.16.3
+reportlab==3.6.12
+openpyxl==3.1.2
