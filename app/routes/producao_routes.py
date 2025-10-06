@@ -16,15 +16,10 @@ def listar():
 def criar():
     form = ProducaoForm()
     
-    # ✅ REMOVIDO: Não precisa mais popular choices pois agora é StringField
-    # from app.models.database import Lote
-    # lotes = list(Lote.select())
-    # form.lote.choices = [(lote.id_lote, lote.numero_lote) for lote in lotes]
-    
     if form.validate_on_submit():
         try:
             producao = ProducaoController.criar_producao(
-                lote_id=form.id_lote.data,  # ✅ CORRIGIDO: form.lote.data → form.id_lote.data
+                lote_id=form.id_lote.data,
                 data_coleta=form.data_coleta.data,
                 quantidade_aves=form.quantidade_aves.data,
                 quantidade_ovos=form.quantidade_ovos.data,
@@ -65,17 +60,10 @@ def editar(producao_id: int):
         return redirect(url_for('producao_web.listar'))
 
     form = ProducaoForm(obj=producao)
-    
-    # ✅ REMOVIDO: Não precisa mais popular choices pois agora é StringField
-    # from app.models.database import Lote
-    # lotes = list(Lote.select())
-    # form.lote.choices = [(lote.id_lote, lote.numero_lote) for lote in lotes]
 
     if request.method == 'GET':
-        # ✅ CORRIGIDO: Preencher o campo id_lote com o valor atual
         form.id_lote.data = producao.id_lote  # Assumindo que o campo no model é id_lote
         
-        # Corrigir a data
         if hasattr(producao.data_coleta, 'date'):
             form.data_coleta.data = producao.data_coleta.date()
         else:

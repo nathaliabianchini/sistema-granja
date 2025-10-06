@@ -222,7 +222,6 @@ def excluir_usuario(id_usuario):
     try:
         from app.models.database import Usuarios
         
-        # CORREÇÃO: Usar sintaxe correta
         usuario = Usuarios.get(Usuarios.id_usuario == id_usuario)
         nome_usuario = usuario.nome
         usuario.delete_instance()
@@ -247,7 +246,6 @@ def toggle_usuario(id_usuario):
     try:
         from app.models.database import Usuarios
         usuario = Usuarios.get(Usuarios.id_usuario == id_usuario)
-        # Assumindo que há um campo 'ativo' no modelo
         usuario.ativo = not usuario.ativo
         usuario.save()
         status = "ativado" if usuario.ativo else "desativado"

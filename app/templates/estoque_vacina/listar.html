@@ -1,0 +1,143 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📦 Estoque de Vacinas</h1>
+        <a class="btn btn-success" href="{{ url_for('estoque_vacina_web.criar') }}">
+            <i class="fas fa-plus"></i> Novo Estoque
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tipo de Vacina</th>
+                            <th>Fabricante</th>
+                            <th>Lote</th>
+                            <th>Validade</th>
+                            <th>Quantidade</th>
+                            <th>Status</th>
+                            <th>Observações</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for estoque in estoques %}
+                        {% set dias_vencimento = (estoque.data_validade - today).days %}
+                        <tr class="{% if dias_vencimento <= 30 %}table-warning{% elif dias_vencimento <= 7 %}table-danger{% endif %}">
+                            <td>{{ estoque.id_estoque_vacina }}</td>
+                            <td>
+                                <span class="badge bg-primary">{{ estoque.tipo_vacina }}</span>
+                            </td>
+                            <td>{{ estoque.fabricante }}</td>
+                            <td>
+                                <strong>{{ estoque.lote_vacina }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge {% if dias_vencimento <= 7 %}bg-danger{% elif dias_vencimento <= 30 %}bg-warning{% else %}bg-success{% endif %}">
+                                    {{ estoque.data_validade.strftime("%d/%m/%Y") }}
+                                    {% if dias_vencimento <= 0 %}
+                                        (VENCIDA)
+                                    {% elif dias_vencimento <= 7 %}
+                                        ({{ dias_vencimento }} dias)
+                                    {% elif dias_vencimento <= 30 %}
+                                        ({{ dias_vencimento }} dias)
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if estoque.quantidade_doses <= 10 %}bg-danger{% elif estoque.quantidade_doses <= 50 %}bg-warning{% else %}bg-success{% endif %}">
+                                    {{ estoque.quantidade_doses }} doses
+                                </span>
+                            </td>
+                            <td>
+                                {% if estoque.ativo %}
+                                    <span class="badge bg-success">Ativo</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inativo</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if estoque.observacoes %}
+                                    <span title="{{ estoque.observacoes }}">
+                                        {{ estoque.observacoes[:30] }}{% if estoque.observacoes|length > 30 %}...{% endif %}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-outline-primary" 
+                                       href="{{ url_for('estoque_vacina_web.editar', id_estoque_vacina=estoque.id_estoque_vacina) }}"
+                                       title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <!-- ✅ CORRIGIR SINTAXE AQUI -->
+                                    <button class="btn btn-outline-danger" 
+                                            data-id="{{ estoque.id_estoque_vacina }}"
+                                            onclick="excluirEstoque(this.getAttribute('data-id'))"
+                                            title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted">
+                                Nenhum estoque de vacina registrado
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ MODAL DE CONFIRMAÇÃO -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tem certeza que deseja excluir este estoque de vacina?</strong></p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Excluir Definitivamente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ✅ FUNÇÃO CORRIGIDA
+function excluirEstoque(id) {
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = '/estoque-vacinas/' + id + '/excluir';
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+</script>
+{% endblock %}

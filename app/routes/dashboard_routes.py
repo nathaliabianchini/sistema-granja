@@ -10,7 +10,6 @@ def index():
         return redirect(url_for('auth.login'))
     
     try:
-        # BUSCAR DADOS REAIS DO BANCO
         from app.models.database import Lote, Producao, Usuarios
         
         # 1. TOTAL DE LOTES
@@ -22,7 +21,7 @@ def index():
         for lote in lotes:
             total_aves += lote.quantidade_inicial
         
-        # 3. PRODUÇÃO HOJE - COM DEBUG
+        # 3. PRODUÇÃO HOJE
         hoje = date.today()
         
         producao_hoje = 0
@@ -37,7 +36,7 @@ def index():
         except Exception as e:
             producao_hoje = 0
         
-        # 4. PRODUÇÃO DO MÊS - COM DEBUG
+        # 4. PRODUÇÃO DO MÊS
         inicio_mes = hoje.replace(day=1)
         
         producao_mes = 0
@@ -58,7 +57,7 @@ def index():
         # 5. TOTAL DE USUÁRIOS
         total_usuarios = Usuarios.select().count()
         
-        # 6. ÚLTIMAS PRODUÇÕES - COM DEBUG
+        # 6. ÚLTIMAS PRODUÇÕES
         ultimas_producoes = []
         try:
             ultimas_producoes = list(

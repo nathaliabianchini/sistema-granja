@@ -8,30 +8,81 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar com botão de logout -->
+    <!-- Navbar com menu de navegação -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
                 <i class="fas fa-home"></i> Sistema Granja
             </a>
             
-            <div class="navbar-nav ms-auto">
-                {% if session.user_logged_in %}
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user"></i> {{ session.user_email }}
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('dashboard.index') }}">
+            <!-- ✅ BOTÃO TOGGLE PARA MOBILE -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- ✅ MENU DE NAVEGAÇÃO PRINCIPAL -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard.index') }}">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </a></li>
-                    </ul>
-                </div>
-                {% endif %}
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('aves.listar') }}">
+                            <i class="fas fa-dove"></i> Aves
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('producao_web.listar') }}">
+                            <i class="fas fa-egg"></i> Produção
+                        </a>
+                    </li>
+                    
+                    <!-- ✅ DROPDOWN DE VACINAS -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-syringe"></i> Vacinas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('estoque_vacina_web.listar') }}">
+                                <i class="fas fa-boxes"></i> Estoque de Vacinas
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('vacina_web.listar') }}">
+                                <i class="fas fa-notes-medical"></i> Registro de Vacinações
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('estoque_vacina_web.criar') }}">
+                                <i class="fas fa-plus text-success"></i> Novo Estoque
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('vacina_web.criar') }}">
+                                <i class="fas fa-plus text-success"></i> Nova Vacinação
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <!-- ✅ MENU DO USUÁRIO (DIREITA) -->
+                <ul class="navbar-nav">
+                    {% if session.user_logged_in %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> {{ session.user_email }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('dashboard.index') }}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>

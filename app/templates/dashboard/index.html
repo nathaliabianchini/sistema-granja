@@ -49,7 +49,7 @@
             </div>
         </div>
 
-        <!-- Módulo Vacinas -->
+        <!-- ✅ MÓDULO VACINAS - ATIVADO -->
         <div class="col-lg-3 col-md-6">
             <div class="card h-100 shadow-sm hover-card">
                 <div class="card-body text-center">
@@ -58,9 +58,28 @@
                     </div>
                     <h5 class="card-title">Vacinas</h5>
                     <p class="card-text">Controle de vacinação, calendários e registros sanitários.</p>
-                    <a href="#" class="btn btn-success" onclick="moduleNotReady('Vacinas')">
-                        <i class="fas fa-arrow-right"></i> Acessar
-                    </a>
+                    
+                    <!-- ✅ DROPDOWN COM OPÇÕES -->
+                    <div class="dropdown">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-arrow-right"></i> Acessar
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('vacina_web.listar') }}">
+                                <i class="fas fa-notes-medical"></i> Registro de Vacinações
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('estoque_vacina_web.listar') }}">
+                                <i class="fas fa-boxes"></i> Estoque de Vacinas
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('vacina_web.criar') }}">
+                                <i class="fas fa-plus text-success"></i> Nova Vacinação
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('estoque_vacina_web.criar') }}">
+                                <i class="fas fa-plus text-info"></i> Novo Estoque
+                            </a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,23 +101,25 @@
         </div>
     </div>
 
-<!-- card administrador -->
-{% if session.user_tipo == 'administrador' %}
-<div class="col-lg-3 col-md-6">
-    <div class="card h-100 shadow-sm hover-card">
-        <div class="card-body text-center">
-            <div class="mb-3">
-                <i class="fas fa-users-cog fa-3x text-danger"></i>
+    <!-- card administrador -->
+    {% if session.user_tipo == 'administrador' %}
+    <div class="row g-4 mt-3">
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-users-cog fa-3x text-danger"></i>
+                    </div>
+                    <h5 class="card-title">Usuários</h5>
+                    <p class="card-text">Gerenciar funcionários e permissões do sistema.</p>
+                    <a href="{{ url_for('auth.listar_usuarios') }}" class="btn btn-danger">
+                        <i class="fas fa-arrow-right"></i> Acessar
+                    </a>
+                </div>
             </div>
-            <h5 class="card-title">Usuários</h5>
-            <p class="card-text">Gerenciar funcionários e permissões do sistema.</p>
-            <a href="{{ url_for('auth.listar_usuarios') }}" class="btn btn-danger">
-                <i class="fas fa-arrow-right"></i> Acessar
-            </a>
         </div>
     </div>
-</div>
-{% endif %}
+    {% endif %}
 
     <!-- Cards de estatísticas resumidas -->
     <div class="row mt-5">

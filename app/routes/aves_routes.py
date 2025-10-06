@@ -56,14 +56,10 @@ def cadastrar():
             
             response = register_poultry(**ave_data)
             
-            # Tratar se é uma tupla (response, status_code)
             if isinstance(response, tuple):
                 actual_response, status_code = response
-                print(f"DEBUG - Status code da tupla: {status_code}")
                 
-                # ✅ CORRIGIDO: Se status_code for 201 (created), sucesso
                 if status_code == 201:
-                    # Tentar obter dados de sucesso
                     try:
                         if hasattr(actual_response, 'get_json'):
                             success_data = actual_response.get_json()
@@ -76,7 +72,6 @@ def cadastrar():
                     
                     return redirect(url_for('aves.listar'))
                 else:
-                    # Tratar erros
                     try:
                         if hasattr(actual_response, 'get_json'):
                             error_data = actual_response.get_json()
@@ -88,7 +83,6 @@ def cadastrar():
                     
                     flash(f'❌ Erro ao cadastrar ave: {error_msg}', 'danger')
             else:
-                # Formato antigo, verificar status_code direto
                 if hasattr(response, 'status_code') and response.status_code == 201:
                     flash('✅ Ave cadastrada com sucesso!', 'success')
                     return redirect(url_for('aves.listar'))
@@ -96,10 +90,8 @@ def cadastrar():
                     flash('❌ Erro ao cadastrar ave.', 'danger')
                 
         except Exception as e:
-            print("DEBUG - Exceção:", str(e))
             flash(f'❌ Erro ao cadastrar ave: {str(e)}', 'danger')
     else:
-        # DEBUG: Mostrar erros de validação
         if form.errors:
             print("DEBUG - Erros de validação:", form.errors)
     
@@ -112,7 +104,6 @@ def editar(ave_id):
         return redirect(url_for('auth.login'))
 
     try:
-        # Buscar a ave
         response = get_poultry(ave_id)
         
         if isinstance(response, tuple):

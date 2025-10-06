@@ -1,0 +1,157 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>💉 Editar Vacinação #{{ vacina.id_vacinacao }}</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.tipo_vacina.label(class="form-label") }}
+                            {{ form.tipo_vacina(class="form-select") }}
+                            {% if form.tipo_vacina.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.tipo_vacina.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.id_lote.label(class="form-label") }}
+                            {{ form.id_lote(class="form-control") }}
+                            {% if form.id_lote.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.id_lote.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.data_aplicacao.label(class="form-label") }}
+                                    {{ form.data_aplicacao(class="form-control") }}
+                                    {% if form.data_aplicacao.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.data_aplicacao.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.quantidade_aves.label(class="form-label") }}
+                                    {{ form.quantidade_aves(class="form-control") }}
+                                    {% if form.quantidade_aves.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.quantidade_aves.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.responsavel.label(class="form-label") }}
+                            {{ form.responsavel(class="form-control") }}
+                            {% if form.responsavel.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.responsavel.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.observacoes.label(class="form-label") }}
+                            {{ form.observacoes(class="form-control", rows="3") }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.observacoes.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                            <a href="{{ url_for('vacina_web.listar') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações da Vacinação -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Informações da Vacinação</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>ID:</strong> {{ vacina.id_vacinacao }}</p>
+                    <p><strong>Vacina:</strong> {{ vacina.tipo_vacina }}</p>
+                    <p><strong>Lote:</strong> {{ vacina.id_lote }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Exclusão -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tem certeza que deseja excluir esta vacinação?</strong></p>
+                <div class="bg-light p-3 rounded">
+                    <strong>ID:</strong> {{ vacina.id_vacinacao }}<br>
+                    <strong>Vacina:</strong> {{ vacina.tipo_vacina }}<br>
+                    <strong>Data:</strong> {{ vacina.data_aplicacao.strftime("%d/%m/%Y") }}<br>
+                    <strong>Lote:</strong> {{ vacina.id_lote }}
+                </div>
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <form method="post" action="{{ url_for('vacina_web.excluir', id_vacinacao=vacina.id_vacinacao) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Excluir Definitivamente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

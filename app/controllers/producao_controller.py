@@ -6,7 +6,7 @@ from app.exceptions import BusinessError
 
 class ProducaoController:
     @staticmethod
-    def criar_producao(lote_id: str, data_coleta: datetime, quantidade_aves: int,  # ✅ CORRIGIDO: int → str
+    def criar_producao(lote_id: str, data_coleta: datetime, quantidade_aves: int, 
                       quantidade_ovos: int, qualidade_producao: str,
                       producao_nao_aproveitada: int, responsavel: str, observacoes: str = None) -> Producao:
        
@@ -19,7 +19,7 @@ class ProducaoController:
 
         try:
             return Producao.create(
-                id_lote=lote_id,  # ✅ JÁ ESTAVA CORRETO
+                id_lote=lote_id,
                 data_coleta=data_coleta,
                 quantidade_aves=quantidade_aves,
                 quantidade_ovos=quantidade_ovos,
@@ -48,8 +48,8 @@ class ProducaoController:
         return list(Producao.select().order_by(Producao.data_coleta.desc()))
 
     @staticmethod
-    def listar_por_lote(lote_id: str) -> List[Producao]:  # ✅ CORRIGIDO: int → str
-        return list(Producao.select().where(Producao.id_lote == lote_id))  # ✅ CORRIGIDO: lote_id → id_lote
+    def listar_por_lote(lote_id: str) -> List[Producao]:  
+        return list(Producao.select().where(Producao.id_lote == lote_id))  
 
     @staticmethod
     def atualizar(producao_id: int, **kwargs) -> bool:
@@ -91,16 +91,16 @@ class ProducaoController:
     def buscar_melhores_lotes(limite: int = 5) -> List[dict]:
         query = (Producao
                 .select(
-                    Producao.id_lote,  # ✅ CORRIGIDO: lote_id → id_lote
+                    Producao.id_lote,  
                     fn.SUM(Producao.quantidade_ovos).alias('total_producao'),
                     fn.AVG(Producao.quantidade_ovos).alias('media_diaria')
                 )
-                .group_by(Producao.id_lote)  # ✅ CORRIGIDO: lote_id → id_lote
+                .group_by(Producao.id_lote)  
                 .order_by(fn.SUM(Producao.quantidade_ovos).desc())
                 .limit(limite))
         
         return [{
-            'lote_id': prod.id_lote,  # ✅ CORRIGIDO: lote_id → id_lote
+            'lote_id': prod.id_lote,  
             'total_producao': int(prod.total_producao),
             'media_diaria': round(float(prod.media_diaria), 2)
         } for prod in query]
@@ -123,7 +123,7 @@ class ProducaoController:
 
         return [{
             'id_producao': p.id_producao,
-            'lote_id': p.id_lote,  # ✅ CORRIGIDO: lote_id → id_lote
+            'lote_id': p.id_lote, 
             'data': p.data_coleta,
             'quantidade': p.quantidade_ovos,
             'percentual_abaixo': round((1 - p.quantidade_ovos/media_geral) * 100, 2)

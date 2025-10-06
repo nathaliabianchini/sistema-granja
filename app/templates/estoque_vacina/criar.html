@@ -1,0 +1,117 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>📦 Novo Estoque de Vacina</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.tipo_vacina.label(class="form-label") }}
+                            {{ form.tipo_vacina(class="form-select") }}
+                            {% if form.tipo_vacina.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.tipo_vacina.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.fabricante.label(class="form-label") }}
+                            {{ form.fabricante(class="form-control", placeholder="Ex: Zoetis, MSD") }}
+                            {% if form.fabricante.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.fabricante.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.lote_vacina.label(class="form-label") }}
+                            {{ form.lote_vacina(class="form-control", placeholder="Ex: VAC001") }}
+                            {% if form.lote_vacina.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.lote_vacina.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.data_validade.label(class="form-label") }}
+                                    {{ form.data_validade(class="form-control") }}
+                                    {% if form.data_validade.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.data_validade.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.quantidade_doses.label(class="form-label") }}
+                                    {{ form.quantidade_doses(class="form-control") }}
+                                    {% if form.quantidade_doses.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.quantidade_doses.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.data_entrada.label(class="form-label") }}
+                            {{ form.data_entrada(class="form-control") }}
+                            {% if form.data_entrada.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.data_entrada.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.observacoes.label(class="form-label") }}
+                            {{ form.observacoes(class="form-control", rows="3") }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.observacoes.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                            <a href="{{ url_for('estoque_vacina_web.listar') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

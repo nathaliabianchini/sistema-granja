@@ -26,10 +26,9 @@ def register_poultry(id_lote: str, raca_ave: Union[str, RacaAve], data_nasciment
             except ValueError:
                 return jsonify({'error': f'Invalid breed: {raca_ave}. Valid values: {[r.value for r in RacaAve]}'}), 400
 
-        # ✅ CORRIGIDO: Usar sintaxe Peewee
         new_poultry = Aves.create(
             id_lote=id_lote,
-            raca_ave=raca_ave.value,  # Converter enum para string
+            raca_ave=raca_ave.value,  
             data_nascimento=data_nascimento,
             tempo_de_vida=tempo_de_vida,
             media_peso=media_peso,
@@ -49,7 +48,6 @@ def register_poultry(id_lote: str, raca_ave: Union[str, RacaAve], data_nasciment
 
 def get_poultries(id_ave=None, raca=None, id_lote=None, data_nascimento=None, incluir_inativas=False):
     try:
-        # ✅ CORRIGIDO: Usar sintaxe Peewee
         query = Aves.select()
         
         if not incluir_inativas:
@@ -84,7 +82,6 @@ def get_poultries(id_ave=None, raca=None, id_lote=None, data_nascimento=None, in
 
 def get_poultry(ave_id: int):
     try:
-        # ✅ CORRIGIDO: Usar sintaxe Peewee
         ave = Aves.get_or_none(Aves.id_ave == ave_id)
         if not ave:
             return jsonify({'message': 'Poultry not found'}), 404
@@ -106,7 +103,6 @@ def get_poultry(ave_id: int):
 
 def update_poultry(ave_id: int, **kwargs):
     try:
-        # ✅ CORRIGIDO: Usar sintaxe Peewee
         ave = Aves.get_or_none(Aves.id_ave == ave_id)
         if not ave:
             return jsonify({'message': 'Poultry not found'}), 404
@@ -150,7 +146,6 @@ def update_poultry(ave_id: int, **kwargs):
             
             ave.observacoes = (ave.observacoes or '') + historico_modificacoes
             
-            # ✅ CORRIGIDO: Usar sintaxe Peewee
             ave.save()
             return jsonify({
                 'message': 'Poultry updated successfully!',
@@ -164,7 +159,6 @@ def update_poultry(ave_id: int, **kwargs):
 
 def delete_poultry(ave_id: int, motivo_exclusao: str):
     try:
-        # ✅ CORRIGIDO: Usar sintaxe Peewee
         ave = Aves.get_or_none(Aves.id_ave == ave_id)
         if not ave:
             return jsonify({'message': 'Poultry not found'}), 404
@@ -183,7 +177,6 @@ def delete_poultry(ave_id: int, motivo_exclusao: str):
         
         ave.observacoes = (ave.observacoes or '') + log_exclusao
         
-        # ✅ CORRIGIDO: Usar sintaxe Peewee
         ave.save()
         
         return jsonify({

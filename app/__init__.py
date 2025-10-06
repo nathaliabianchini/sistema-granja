@@ -5,16 +5,19 @@ def create_app():
     app.config['SECRET_KEY'] = 'sua-chave-secreta'
     
     # Configurar banco
-    from app.models.database import db, Lote, Producao, Usuarios
+    from app.models.database import db, Lote, Producao, Usuarios, EstoqueVacina, Vacinacao
     if not db.is_connection_usable():
         db.connect()
-    db.create_tables([Lote, Producao, Usuarios], safe=True)
+    db.create_tables([Lote, Producao, Usuarios, EstoqueVacina, Vacinacao], safe=True)
 
     # Registrar blueprints WEB (páginas)
     from app.routes.auth_routes import auth_bp
     from app.routes.dashboard_routes import dashboard_bp
     from app.routes.producao_routes import producao_web
     from app.routes.aves_routes import aves_bp
+    
+    from app.routes.estoque_vacina_routes import estoque_vacina_web
+    from app.routes.vacina_routes import vacina_web 
     
     # Registrar blueprints API (JSON)
     from app.api.endpoints.producao_api import producao_api
@@ -25,6 +28,10 @@ def create_app():
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')  
     app.register_blueprint(producao_web, url_prefix='/producoes')
     app.register_blueprint(aves_bp)
+    
+    app.register_blueprint(estoque_vacina_web)  
+    app.register_blueprint(vacina_web)          
+    
     app.register_blueprint(producao_api)                      
     app.register_blueprint(api_routes, url_prefix='/api')     
     

@@ -4,7 +4,6 @@ from wtforms.validators import DataRequired, NumberRange, Length
 from app.models.database import QualidadeProducao
 
 class ProducaoForm(FlaskForm):
-    # ✅ CORRIGIDO
     id_lote = StringField('Lote', validators=[
         DataRequired(),
         Length(min=1, max=50, message='O lote deve ter entre 1 e 50 caracteres')

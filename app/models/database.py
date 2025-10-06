@@ -118,15 +118,40 @@ class TipoVacina(Enum):
     ILT = "Laringotraqueíte"
     METAPNEUMOVIRUS = "Metapneumovírus Aviário"
 
-class Vacina(BaseModel):
-    id_vacina = AutoField()                            #PK
-    data = DateField()
+class EstoqueVacina(BaseModel):
+    id_estoque_vacina = AutoField()
+    tipo_vacina = CharField(
+        choices=[member.value for member in TipoVacina]
+    )
+    fabricante = CharField(max_length=100)
+    lote_vacina = CharField(max_length=50)
+    data_validade = DateField()
+    quantidade_doses = IntegerField()
+    data_entrada = DateField(default=datetime.date.today)
+    observacoes = TextField(null=True)
+    ativo = BooleanField(default=True)
+    
+    class Meta:
+        table_name = 'estoque_vacina'
+
+class Vacinacao(BaseModel):
+    id_vacinacao = AutoField()
+    data_aplicacao = DateField()
     responsavel = CharField(max_length=100)
     tipo_vacina = CharField(
-        choices = [member.value for member in TipoVacina]
+        choices=[member.value for member in TipoVacina]
     )
-    setor = ForeignKeyField(Setor, backref="vacinas")
-    observacoes = TextField(null=True)  #Usuário pode registrar informações sobre cada vacinação como: quem aplicou, etc.
+    id_lote = CharField(max_length=50)  
+    quantidade_aves = IntegerField()
+    observacoes = TextField(null=True)
+    
+    class Meta:
+        table_name = 'vacinacao'
+
+class StatusVacinacao(Enum):
+    AGENDADA = 'AGENDADA'
+    APLICADA = 'APLICADA'
+    CANCELADA = 'CANCELADA'
 
 class QualidadeProducao(Enum):
     EXCELENTE = "Excelente"
@@ -141,7 +166,7 @@ class Producao(BaseModel):
     quantidade_aves = IntegerField()
     qualidade_producao = CharField(max_length=50)
     producao_nao_aproveitada = IntegerField(default=0)
-    id_lote = CharField(max_length=50)  # ✅ CAMPO LIVRE COMO AVES
+    id_lote = CharField(max_length=50)  
     observacoes = TextField(null=True)
     responsavel = CharField(max_length=100)
 
@@ -228,9 +253,8 @@ class StatusNotificacao(BaseModel):
     class Meta:
         table_name = 'status_notificacao'
 
-# Conectar ao banco e criar tabelas
 db.connect()
-db.create_tables([Granja, Usuarios, Insumo, Lote, Setor, Vacina, Aves, Producao, 
+db.create_tables([Granja, Usuarios, Insumo, Lote, Setor, EstoqueVacina, Vacinacao, Aves, Producao, 
                   UserActivityLog, Avisos, NotificacaoUsuario, HistoricoAvisos, 
                   HistoricoProducao, CategoriaNotificacao, PrioridadeNotificacao, 
                   StatusNotificacao], safe=True)

@@ -6,7 +6,6 @@ from datetime import date
 class AvesForm(FlaskForm):
     id_lote = StringField('ID do Lote', validators=[DataRequired(), Length(min=1, max=50)])
     
-    # CORRIGIDO: SelectField com as raças válidas
     raca_ave = SelectField('Raça da Ave', 
         choices=[
             ('Isa Brown', 'Isa Brown'),

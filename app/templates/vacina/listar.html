@@ -1,0 +1,125 @@
+{% extends "layouts/admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>💉 Registro de Vacinações</h1>
+        <a class="btn btn-success" href="{{ url_for('vacina_web.criar') }}">
+            <i class="fas fa-plus"></i> Nova Vacinação
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Data Aplicação</th>
+                            <th>Tipo de Vacina</th>
+                            <th>Lote</th>
+                            <th>Qtd. Aves</th>
+                            <th>Responsável</th>
+                            <th>Observações</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for vacina in vacinas %}
+                        <tr>
+                            <td>{{ vacina.id_vacinacao }}</td>
+                            <td>
+                                <span class="badge bg-info">
+                                    {{ vacina.data_aplicacao.strftime("%d/%m/%Y") }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ vacina.tipo_vacina }}</span>
+                            </td>
+                            <td>
+                                <strong>{{ vacina.id_lote }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-success">{{ vacina.quantidade_aves }} aves</span>
+                            </td>
+                            <td>{{ vacina.responsavel }}</td>
+                            <td>
+                                {% if vacina.observacoes %}
+                                    <span title="{{ vacina.observacoes }}">
+                                        {{ vacina.observacoes[:30] }}{% if vacina.observacoes|length > 30 %}...{% endif %}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-outline-primary" 
+                                       href="{{ url_for('vacina_web.editar', id_vacinacao=vacina.id_vacinacao) }}"
+                                       title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <!-- ✅ CORRIGIR SINTAXE AQUI -->
+                                    <button class="btn btn-outline-danger" 
+                                            data-id="{{ vacina.id_vacinacao }}"
+                                            onclick="excluirVacina(this.getAttribute('data-id'))"
+                                            title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">
+                                Nenhuma vacinação registrada
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tem certeza que deseja excluir este registro de vacinação?</strong></p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Excluir Definitivamente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ✅ FUNÇÃO CORRIGIDA
+function excluirVacina(id) {
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = '/vacinas/' + id + '/excluir';
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+</script>
+{% endblock %}
