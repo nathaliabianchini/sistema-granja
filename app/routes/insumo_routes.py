@@ -59,7 +59,7 @@ def criar():
                 quantidade_minima=form.quantidade_minima.data,
                 data_validade=form.data_validade.data,
                 observacoes=form.observacoes.data,
-                usuario_id=1  # TODO: Pegar do session
+                usuario_id=1 
             )
             
             flash('✅ Insumo criado com sucesso!', 'success')
@@ -79,7 +79,6 @@ def editar(id_insumo: int):
         return redirect(url_for('insumo_web.listar'))
 
     form = InsumoForm(obj=insumo)
-    # Não mostrar quantidade inicial na edição
     del form.quantidade_inicial
 
     if form.validate_on_submit():

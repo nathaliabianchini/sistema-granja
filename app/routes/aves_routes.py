@@ -161,13 +161,11 @@ def editar(ave_id):
         except Exception as e:
             flash(f'❌ Erro ao atualizar ave: {str(e)}', 'danger')
 
-    # Preencher formulário com dados atuais (apenas no GET)
+    # Preencher formulário com dados atuais
     if request.method == 'GET':
         try:
             form.id_lote.data = ave_data.get('id_lote', '')
             form.raca_ave.data = ave_data.get('raca_ave', '')
-            
-            # Tratar data de nascimento
             data_nasc = ave_data.get('data_nascimento')
             if data_nasc:
                 if isinstance(data_nasc, str):

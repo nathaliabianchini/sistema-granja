@@ -10,8 +10,19 @@ from app.forms.producao_forms import ProducaoForm
 from app.controllers.producao_controller import ProducaoController
 from app.models.database import db
 from app.exceptions import BusinessError
+from app.controllers.mortalidade_controller import mortalidade_bp
+
+from app.controllers.producao_registro_controller import producao_bp
+
+from app.controllers.producao_relatorio_controller import producao_relatorio_bp
 
 bp = Blueprint('routes', __name__)
+
+# Registrar blueprint de mortalidade
+def init_app(app):
+    app.register_blueprint(mortalidade_bp)
+    app.register_blueprint(producao_bp)
+    app.register_blueprint(producao_relatorio_bp)
 
 @bp.route('/api/auth/register', methods=['POST'])
 def register_user():

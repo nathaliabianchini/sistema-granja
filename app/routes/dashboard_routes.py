@@ -71,7 +71,6 @@ def index():
 
             ultimas_producoes = []
         
-        # DADOS PARA O TEMPLATE
         resumo = {
             'total_lotes': total_lotes,
             'total_aves': total_aves,

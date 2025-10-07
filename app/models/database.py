@@ -302,6 +302,21 @@ class PrioridadeNotificacao(BaseModel):
     class Meta:
         table_name = 'prioridade_notificacao'
 
+class RelatoriosMortalidade(BaseModel):
+    id_mortalidade = AutoField(primary_key=True)
+    data_hora_evento = DateTimeField()
+    ave = ForeignKeyField(Aves, backref='mortalidades')
+    lote = ForeignKeyField(Lote, backref='mortalidades')
+    setor = ForeignKeyField(Setor, backref='mortalidades')
+    motivo_obito = CharField(max_length=100)
+    categoria_motivo = CharField(max_length=50) 
+    descricao_adicional = TextField(null=True)
+    funcionario = ForeignKeyField(Usuarios, backref='mortalidades')
+    data_registro = DateTimeField(default=lambda: datetime.datetime.now())
+    
+    class Meta:
+        table_name = 'relatorios_mortalidade'
+
 class StatusNotificacao(BaseModel):
     id_status = AutoField(primary_key=True)
     nome = CharField(max_length=50, unique=True)  
@@ -316,3 +331,4 @@ db.create_tables([Granja, Usuarios, Insumo, InsumoNovo, MovimentacaoInsumo, Lote
                   UserActivityLog, Avisos, NotificacaoUsuario, HistoricoAvisos, 
                   HistoricoProducao, CategoriaNotificacao, PrioridadeNotificacao, 
                   StatusNotificacao], safe=True)
+db.create_tables([RelatoriosMortalidade], safe=True)

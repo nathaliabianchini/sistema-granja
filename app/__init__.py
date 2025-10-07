@@ -34,6 +34,10 @@ def create_app():
     app.register_blueprint(api_routes, url_prefix='/api')     
 
     app.register_blueprint(insumo_web, url_prefix='/insumos') 
+
+    # Registrar blueprints dos relatórios e mortalidade
+    from app.routes.routes import init_app as init_routes
+    init_routes(app)
     
     # Rota principal - VERIFICAR LOGIN PRIMEIRO
     @app.route('/')

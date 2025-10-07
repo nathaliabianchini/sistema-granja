@@ -1,0 +1,91 @@
+{% extends 'layouts/base.html' %}
+{% block page_content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-warning text-white d-flex align-items-center">
+                <i class="fas fa-egg fa-2x me-2"></i>
+                <h4 class="mb-0">Relatório de Produção de Ovos</h4>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Período:</label>
+                        <div class="input-group">
+                            <input type="date" name="inicio" class="form-control"> 
+                            <span class="input-group-text">a</span>
+                            <input type="date" name="fim" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Lote:</label>
+                        <input type="text" name="lote" class="form-control">
+                    </div>
+                    <div class="col-md-5 d-flex align-items-end">
+                        <button type="submit" class="btn btn-warning me-2"><i class="fas fa-filter"></i> Filtrar</button>
+                        <a href="?export=csv" class="btn btn-outline-secondary me-2"><i class="fas fa-file-csv"></i> Exportar CSV</a>
+                        <a href="?export=pdf" class="btn btn-outline-secondary"><i class="fas fa-file-pdf"></i> Exportar PDF</a>
+                    </div>
+                </form>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-2 text-center">
+                            <span class="fw-bold">Ovos produzidos</span><br>
+                            <span class="badge bg-warning text-dark fs-5"><i class="fas fa-egg"></i> {{ total_ovos }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-2 text-center">
+                            <span class="fw-bold">Ovos danificados</span><br>
+                            <span class="badge bg-danger fs-5"><i class="fas fa-crack"></i> {{ ovos_danificados }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-2 text-center">
+                            <span class="fw-bold">Aves ativas</span><br>
+                            <span class="badge bg-primary fs-5"><i class="fas fa-dove"></i> {{ aves_ativas }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-2 text-center">
+                            <span class="fw-bold">Taxa de ovos danificados</span><br>
+                            <span class="badge bg-info text-dark fs-5"><i class="fas fa-percent"></i> {{ taxa_quebra }}%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-warning">
+                            <tr>
+                                <th>Data</th>
+                                <th>Lote</th>
+                                <th>Ovos</th>
+                                <th>Ovos Danificados</th>
+                                <th>Aves Ativas</th>
+                                <th>Qualidade</th>
+                                <th>Responsável</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in registros %}
+                            <tr>
+                                <td>{{ r.data_coleta }}</td>
+                                <td>{{ r.id_lote }}</td>
+                                <td>{{ r.quantidade_ovos }}</td>
+                                <td>{{ r.producao_nao_aproveitada }}</td>
+                                <td>{{ r.quantidade_aves }}</td>
+                                <td>{{ r.qualidade_producao }}</td>
+                                <td>{{ r.responsavel }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if registros|length == 0 %}
+                        <p class="mt-3 text-muted">Nenhum registro de produção encontrado.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

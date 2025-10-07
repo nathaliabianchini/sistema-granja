@@ -1,0 +1,24 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<h2>Registro de Produção de Ovos</h2>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <label for="id_lote">Lote:</label>
+    {{ form.id_lote(size=20) }}<br>
+    <label for="data_coleta">Data da Coleta:</label>
+    {{ form.data_coleta() }}<br>
+    <label for="quantidade_aves">Quantidade de Aves:</label>
+    {{ form.quantidade_aves() }}<br>
+    <label for="quantidade_ovos">Quantidade de Ovos:</label>
+    {{ form.quantidade_ovos() }}<br>
+    <label for="qualidade_producao">Qualidade da Produção:</label>
+    {{ form.qualidade_producao() }}<br>
+    <label for="producao_nao_aproveitada">Ovos Quebrados/Danificados:</label>
+    {{ form.producao_nao_aproveitada() }}<br>
+    <label for="responsavel">Responsável:</label>
+    {{ form.responsavel(size=30) }}<br>
+    <label for="observacoes">Observações:</label>
+    {{ form.observacoes(rows=3, cols=40) }}<br>
+    <button type="submit">Registrar</button>
+</form>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'layouts/base.html' %}
+{% block page_content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-danger text-white d-flex align-items-center">
+                <i class="fas fa-skull-crossbones fa-2x me-2"></i>
+                <h4 class="mb-0">Relatório de Mortalidade</h4>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Período:</label>
+                        <div class="input-group">
+                            <input type="date" name="inicio" class="form-control"> 
+                            <span class="input-group-text">a</span>
+                            <input type="date" name="fim" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Lote:</label>
+                        <input type="text" name="lote" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Setor:</label>
+                        <input type="text" name="setor" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Raça:</label>
+                        <input type="text" name="raca" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Motivo:</label>
+                        <input type="text" name="motivo" class="form-control">
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-danger"><i class="fas fa-filter"></i> Filtrar</button>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <a href="?export=csv" class="btn btn-outline-secondary me-2"><i class="fas fa-file-csv"></i> Exportar CSV</a>
+                        <a href="?export=pdf" class="btn btn-outline-secondary"><i class="fas fa-file-pdf"></i> Exportar PDF</a>
+                    </div>
+                </form>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-2 text-center">
+                            <span class="fw-bold">Total de mortes</span><br>
+                            <span class="badge bg-danger fs-5"><i class="fas fa-skull-crossbones"></i> {{ total_mortes }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-2 text-center">
+                            <span class="fw-bold">Porcentagem de mortalidade no lote</span><br>
+                            <span class="badge bg-info text-dark fs-5"><i class="fas fa-percent"></i> {{ porcentagem_mortalidade if porcentagem_mortalidade else 'N/A' }}%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Ave</th>
+                                <th>Lote</th>
+                                <th>Setor</th>
+                                <th>Motivo</th>
+                                <th>Categoria</th>
+                                <th>Funcionário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in registros %}
+                            <tr>
+                                <td>{{ r.data_hora_evento }}</td>
+                                <td>{{ r.ave.id_ave }}</td>
+                                <td>{{ r.lote.numero_lote }}</td>
+                                <td>{{ r.setor.descricao_setor }}</td>
+                                <td>{{ r.motivo_obito }}</td>
+                                <td>{{ r.categoria_motivo }}</td>
+                                <td>{{ r.funcionario.nome }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if registros|length == 0 %}
+                        <p class="mt-3 text-muted">Nenhum registro de mortalidade encontrado.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
