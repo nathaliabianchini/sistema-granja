@@ -60,7 +60,7 @@
         <div class="col-md-3">
             <div class="card bg-danger text-white">
                 <div class="card-body text-center">
-                    <h2>{{ insumos|selectattr('data_validade')|select('lessthan', today, 'data_validade')|list|length }}</h2>
+                    <h2>{{ insumos|selectattr('data_validade', 'lt', today)|list|length }}</h2>
                     <p class="mb-0">Já Vencidos</p>
                 </div>
             </div>
@@ -191,20 +191,6 @@
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            {% if dias_restantes <= 0 or dias_restantes <= 3 %}
-                                                <a href="{{ url_for('insumo_web.nova_movimentacao') }}?insumo_id={{ insumo.id_insumo }}&tipo=Saída - Perda" 
-                                                   class="btn btn-danger btn-sm" title="Registrar Perda">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            {% endif %}
-                                            <a href="{{ url_for('insumo_web.nova_movimentacao') }}?insumo_id={{ insumo.id_insumo }}&tipo=Saída - Uso" 
-                                               class="btn btn-warning btn-sm" title="Registrar Uso">
-                                                <i class="fas fa-minus"></i>
-                                            </a>
-                                            <a href="{{ url_for('insumo_web.editar', id_insumo=insumo.id_insumo) }}" 
-                                               class="btn btn-primary btn-sm" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
                                         </div>
                                     </td>
                                 </tr>
