@@ -1,0 +1,6 @@
+__pycache__/           
+app/__pycache__/       
+app/controllers/__pycache__/  
+instance/site.db       
+venv/                  
+.DS_Store              
