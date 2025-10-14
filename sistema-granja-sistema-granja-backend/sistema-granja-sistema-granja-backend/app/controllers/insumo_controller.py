@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from insumo_service import InsumoService
-from models import Usuarios, TipoUsuario, TipoInsumo, UnidadeMedida, TipoMovimentacao
+from app.insumo_service import InsumoService
+from app.models import Usuarios, TipoUsuario, TipoInsumo, UnidadeMedida, TipoMovimentacao
 from datetime import datetime, date, timedelta
 import csv
 from io import StringIO

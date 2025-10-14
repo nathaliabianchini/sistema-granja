@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from config import Config # type: ignore
-from controllers.producao_controller import producao_bp # type: ignore
-from controllers.insumo_controller import insumo_bp # type: ignore
+from app.config import Config  
+from app.controllers.producao_controller import producao_bp  # type: ignore
+from app.controllers.insumo_controller import insumo_bp  # type: ignore
 
 db = SQLAlchemy()
 
@@ -11,7 +11,7 @@ def create_app():
     app.config.from_object(Config)
     
     db.init_app(app)
-    from controllers.vacina_controller import vacina_bp # type: ignore
+    from app.controllers.vacina_controller import vacina_bp  # type: ignore
     app.register_blueprint(vacina_bp, url_prefix='/api/vacinas')
     app.register_blueprint(producao_bp, url_prefix='/api/producao')
     app.register_blueprint(insumo_bp, url_prefix='/api/insumos')

@@ -1,4 +1,4 @@
-from models import (db, Insumos, MovimentacaoInsumo, RelatorioConsumo, AlertaInsumo,
+from app.models import (db, Insumos, MovimentacaoInsumo, RelatorioConsumo, AlertaInsumo,
                    TipoInsumo, UnidadeMedida, TipoMovimentacao, StatusInsumo, Usuarios)
 from datetime import datetime, date, timedelta
 from sqlalchemy import func, and_, or_, desc, asc

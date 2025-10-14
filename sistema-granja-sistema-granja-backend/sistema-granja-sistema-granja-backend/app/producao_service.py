@@ -1,4 +1,4 @@
-from models import db, ProducaoOvos, HistoricoProducaoOvos, RelatorioProducao, QualidadeOvo, StatusProducao, Setores, Lotes, Usuarios
+from app.models import db, ProducaoOvos, HistoricoProducaoOvos, RelatorioProducao, QualidadeOvo, StatusProducao, Setores, Lotes, Usuarios
 from datetime import datetime, date, timedelta
 from sqlalchemy import func, and_, or_, desc
 from sqlalchemy.exc import IntegrityError

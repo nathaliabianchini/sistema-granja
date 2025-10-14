@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from producao_service import ProducaoService
-from models import Usuarios, TipoUsuario
+from app.producao_service import ProducaoService
+from app.models import Usuarios, TipoUsuario
 from datetime import datetime, date, timedelta
 import csv
 from io import StringIO

@@ -8,7 +8,6 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'default_secret_key'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    DEBUG = os.environ.get('DEBUG', 'False') == 'True'
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt_secret_key_2024'
     JWT_EXPIRATION_HOURS = int(os.environ.get('JWT_EXPIRATION_HOURS', 24))
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
